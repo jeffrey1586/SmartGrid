@@ -7,4 +7,4 @@ class Battery(object):
         self.capacity = capacity
 
 
-        super(, self).__init__()
+        #super(, self).__init__()

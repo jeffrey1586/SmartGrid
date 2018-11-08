@@ -6,4 +6,4 @@ class House(object):
             self.yvalue = yvalue
             self.output = output
 
-        super(, self).__init__()
+        #super(, self).__init__()
