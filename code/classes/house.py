@@ -6,4 +6,7 @@ class House(object):
             self.yvalue = yvalue
             self.output = output
 
+    def __str__(self):
+        return f"{self.xvalue}, {self.yvalue}, {self.output}" 
+
         #super(, self).__init__()
