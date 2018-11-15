@@ -25,17 +25,21 @@ housefile= open("data/wijk1_huizen.csv", "r")
 # making house instances and adding to list
 list_houses = []
 counter = 0
+total = 0
 for line in housefile:
-    if counter == 1:
+    if counter != 0:
         values = line.split(",")
         x_value = values[0]
         y_value = values[1]
         output = values[2]
+        total += float(output)
         new_house = House(x_value, y_value, output)
         list_houses.append(new_house)
+        
         # calculate length to closest battery
-        smallest = new_house.calculate(x_value, y_value, list_batteries)
-    counter += 1
+        smallest = new_house.calculate(x_value, y_value, output, list_batteries)
+    counter = 1
+print(total)
 
 
 

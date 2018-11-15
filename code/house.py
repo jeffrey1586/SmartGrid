@@ -8,20 +8,34 @@ class House(object):
             self.yvalue = yvalue
             self.output = output
 
-    # calculating which battery
-    def calculate(self, x, y, list_batteries):
+    # calculating battery capacity and cable lengths
+    def calculate(self, x, y, output, list_batteries):
         batteries = list_batteries
+        distances = []
 
-        check = []
-        for i in batteries:
-            x_value = i.get_xval()
-            y_value = i.get_yval()
+        #
+        for battery in batteries:
+            x_value = battery.get_xval()
+            y_value = battery.get_yval()
             checkx = abs(int(x)-int(x_value))
             checky = abs(int(y)-int(y_value))
-            disty = checkx + checky
-            check.append(disty)
-            shortest_length = min(check)
-        battery_index = check.index(shortest_length)
+
+            distTotal = checkx + checky
+            distances.append(distTotal)
+            shortest_length = min(distances)
+
+        #
+        battery_index = distances.index(shortest_length)
+        #
+        new_capacity = batteries[battery_index].set_capacity(output)
+        # if new_capacity < 0:
+        #     # voeg output weer toe aan baterij
+        #     zeroState = batteries[battery_index].set_capacity(-1 * float(output))
+        #
+        #     # trek output af van andere batterij
+        #     new_capacity = batteries[1].set_capacity(output)
+        # print(battery_index)
+        # print(new_capacity)
         return (shortest_length, battery_index)
 
     def __str__(self):
