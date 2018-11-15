@@ -5,6 +5,8 @@ Veel huizen hebben tegenwoordig zonnepanelen om zelf energie mee te produceren. 
 ![Plaatje van wijk 1]  
 Bron: http://heuristieken.nl/wiki/index.php?title=SmartGrid
 
+Statespace uitleggen hier?
+
 ## Aan de slag (Getting Started)
 
 ### Vereisten (Prerequisites)
