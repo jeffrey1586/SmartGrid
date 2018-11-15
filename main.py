@@ -4,25 +4,6 @@ import numpy as np
 from code.house import House
 from code.battery import Battery
 
-# reading the house file for 'wijk1'
-housefile= open("data/wijk1_huizen.csv", "r")
-
-# making house instances and adding to list
-list_houses = []
-counter = 0
-for line in housefile:
-    if counter == 1:
-        values = line.split(",")
-        x_value = values[0]
-        y_value = values[1]
-        output = values[2]
-        new_house = House(x_value, y_value, output)
-        list_houses.append(new_house)
-        smallest = new_house.calculate(x_value, y_value)
-        print(smallest)
-    counter += 1
-
-
 # reading the battery file for 'wijk1'
 batteryfile= open("data/wijk1_batterijen.txt", "r")
 
@@ -37,6 +18,26 @@ for line in batteryfile:
         capacity = check[2]
         list_batteries.append(Battery(x_value, y_value, capacity))
     counter = 1
+
+# reading the house file for 'wijk1'
+housefile= open("data/wijk1_huizen.csv", "r")
+
+# making house instances and adding to list
+list_houses = []
+counter = 0
+for line in housefile:
+    if counter == 1:
+        values = line.split(",")
+        x_value = values[0]
+        y_value = values[1]
+        output = values[2]
+        new_house = House(x_value, y_value, output)
+        list_houses.append(new_house)
+        # calculate length to closest battery
+        smallest = new_house.calculate(x_value, y_value, list_batteries)
+    counter += 1
+
+
 
 ## visualising the smartgrid
 # readinng from house file

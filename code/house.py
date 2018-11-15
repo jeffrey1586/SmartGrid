@@ -1,3 +1,5 @@
+
+
 class House(object):
 
     """Defines the house class."""
@@ -6,22 +8,21 @@ class House(object):
             self.yvalue = yvalue
             self.output = output
 
+    # calculating which battery
+    def calculate(self, x, y, list_batteries):
+        batteries = list_batteries
 
-    def calculate(self, x, y):
-        batteries = [(38, 12),(43, 13),(42, 3),(49, 23),(3, 45)]
         check = []
         for i in batteries:
-            x_value = i[0]
-            y_value = i[1]
+            x_value = i.get_xval()
+            y_value = i.get_yval()
             checkx = abs(int(x)-int(x_value))
             checky = abs(int(y)-int(y_value))
             disty = checkx + checky
             check.append(disty)
-            smallest = min(check)
-            index = check.index(smallest)
-            print(index)
-
-        return smallest
+            shortest_length = min(check)
+        battery_index = check.index(shortest_length)
+        return (shortest_length, battery_index)
 
     def __str__(self):
         return f"{self.xvalue}, {self.yvalue}, {self.output}"

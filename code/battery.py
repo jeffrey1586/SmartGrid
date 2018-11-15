@@ -6,5 +6,9 @@ class Battery(object):
         self.yvalue = yvalue
         self.capacity = capacity
 
+    def get_xval(self):
+        return self.xvalue
 
+    def get_yval(self):
+        return self.yvalue
         #super(, self).__init__()
