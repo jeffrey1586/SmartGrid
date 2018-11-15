@@ -2,7 +2,7 @@
 
 Veel huizen hebben tegenwoordig zonnepanelen om zelf energie mee te produceren. Deze productie is echter vaak groter dan de consumptie, waardoor de stroom die overblijft in batterijen opgeslagen moet worden. In SmartGrid worden drie wijken gevisualiseerd met elk drie batterijen, waarbij de opslag geregeld dient te worden: in deze code hebben wij oplossingen gevonden voor dit probleem, dat vier fases kent. 
 
-![Plaatje van wijk 1](http://heuristieken.nl/wiki/index.php?title=File:Wijk1.png)
+![Plaatje van wijk 1]  
 Bron: http://heuristieken.nl/wiki/index.php?title=SmartGrid
 
 ## Aan de slag (Getting Started)
