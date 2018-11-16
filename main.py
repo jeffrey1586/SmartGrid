@@ -35,16 +35,15 @@ for line in housefile:
         list_houses.append(new_house)
 
         # calculate length to closest battery
-        smallest = new_house.calculate(x_value, y_value, output, list_batteries)
+        battery_index = new_house.calculate(x_value, y_value, output, list_batteries)
+
     counter = 1
+
 print("bat1", list_batteries[0].get_capacity())
 print("bat2", list_batteries[1].get_capacity())
 print("bat3", list_batteries[2].get_capacity())
 print("bat4", list_batteries[3].get_capacity())
 print("bat5", list_batteries[4].get_capacity())
-
-
-
 
 ## visualising the smartgrid
 # readinng from house file
@@ -67,6 +66,8 @@ housefile.plot(kind = 'scatter', x = 'x', y = 'y', ax = ax, color='blue')
 xBat = list(map(lambda x: x[0], Batteries))
 yBat = list(map(lambda x: x[1], Batteries))
 ax.plot(xBat, yBat, 's', color='red')
+
+# plotting cables
 
 # turn on the grid
 ax.grid()
