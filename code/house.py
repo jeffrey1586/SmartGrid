@@ -1,5 +1,3 @@
-
-
 class House(object):
 
     """Defines the house class."""
@@ -26,7 +24,6 @@ class House(object):
 
         # shortest distance from house to battery
         shortest_length = min(distances)
-
         # getting battery closest to house
         battery_index = distances.index(shortest_length)
 
@@ -39,7 +36,6 @@ class House(object):
 
                 # add output back to negative battery
                 new_capacity = batteries[battery_index].set_capacity(-1 * float(output))
-
                 # block battery
                 distances[battery_index] = 10000
 
@@ -49,7 +45,7 @@ class House(object):
 
                 # substract output from other closest battery
                 new_capacity = batteries[battery_index].set_capacity(output)
-        return (battery_index)
+        return (shortest_length)
 
     def __str__(self):
         return f"{self.xvalue}, {self.yvalue}, {self.output}"

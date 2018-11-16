@@ -5,7 +5,7 @@ from code.house import House
 from code.battery import Battery
 
 # reading the battery file for 'wijk1'
-batteryfile= open("data/wijk2_batterijen.txt", "r")
+batteryfile= open("data/wijk3_batterijen.txt", "r")
 
 # making battery instances and adding to list
 list_batteries = []
@@ -20,11 +20,12 @@ for line in batteryfile:
     counter = 1
 
 # reading the house file for 'wijk1'
-housefile= open("data/wijk2_huizen.csv", "r")
+housefile= open("data/wijk3_huizen.csv", "r")
 
 # making house instances and adding to list
 list_houses = []
 counter = 0
+total_length = 0
 for line in housefile:
     if counter != 0:
         values = line.split(",")
@@ -35,27 +36,26 @@ for line in housefile:
         list_houses.append(new_house)
 
         # calculate length to closest battery
-        battery_index = new_house.calculate(x_value, y_value, output, list_batteries)
-
+        shortest_length = new_house.calculate(x_value, y_value, output, list_batteries)
+        total_length += shortest_length
     counter = 1
+print("total", total_length)
 
-print("bat1", list_batteries[0].get_capacity())
-print("bat2", list_batteries[1].get_capacity())
-print("bat3", list_batteries[2].get_capacity())
-print("bat4", list_batteries[3].get_capacity())
-print("bat5", list_batteries[4].get_capacity())
+#print("bat1", list_batteries[0].get_capacity())
+
+
 
 ## visualising the smartgrid
 # readinng from house file
-housefile= pd.read_csv('data/wijk2_huizen.csv', sep = ',')
+housefile= pd.read_csv('data/wijk3_huizen.csv', sep = ',')
 
 #load in batteries (hardcoded)
 Batteries = [
-            (19, 20),
-            (1, 36),
-            (34, 49),
-            (41, 21),
-            (26, 22),
+            (18, 34),
+            (32, 11),
+            (41, 1),
+            (3, 35),
+            (39, 41),
 ]
 
 # setting the x and y coordinates from the houses in the plot
