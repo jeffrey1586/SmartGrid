@@ -1,11 +1,12 @@
 import pandas as pd
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.collections import LineCollection
 from code.house import House
 from code.battery import Battery
 
 # reading the battery file for 'wijk1'
-batteryfile= open("data/wijk3_batterijen.txt", "r")
+batteryfile= open("data/wijk1_batterijen.txt", "r")
 
 # making battery instances and adding to list
 list_batteries = []
@@ -20,12 +21,12 @@ for line in batteryfile:
     counter = 1
 
 # reading the house file for 'wijk1'
-housefile= open("data/wijk3_huizen.csv", "r")
+housefile= open("data/wijk1_huizen.csv", "r")
 
 # making house instances and adding to list
 list_houses = []
+connected_battery = []
 counter = 0
-total_length = 0
 for line in housefile:
     if counter != 0:
         values = line.split(",")
@@ -36,38 +37,48 @@ for line in housefile:
         list_houses.append(new_house)
 
         # calculate length to closest battery
-        shortest_length = new_house.calculate(x_value, y_value, output, list_batteries)
-        total_length += shortest_length
+        battery_index = new_house.calculate(x_value, y_value, output, list_batteries)
+        connected_battery.append(battery_index)
     counter = 1
-print("total", total_length)
-
 #print("bat1", list_batteries[0].get_capacity())
-
 
 
 ## visualising the smartgrid
 # readinng from house file
-housefile= pd.read_csv('data/wijk3_huizen.csv', sep = ',')
-
-#load in batteries (hardcoded)
-Batteries = [
-            (18, 34),
-            (32, 11),
-            (41, 1),
-            (3, 35),
-            (39, 41),
-]
+housefile= pd.read_csv('data/wijk1_huizen.csv', sep = ',')
 
 # setting the x and y coordinates from the houses in the plot
 fig, ax = plt.subplots()
 housefile.plot(kind = 'scatter', x = 'x', y = 'y', ax = ax, color='blue')
+
+#load in battery coordinates
+Batteries = []
+for i in range(5):
+    battery_nmr = list_batteries[i]
+    x_battery = int(battery_nmr.get_xval())
+    y_battery = int(battery_nmr.get_yval())
+    Batteries.append((x_battery, y_battery))
 
 # adding the batteries to the plot
 xBat = list(map(lambda x: x[0], Batteries))
 yBat = list(map(lambda x: x[1], Batteries))
 ax.plot(xBat, yBat, 's', color='red')
 
-# plotting cables
+# appending cables lines to lineCollection
+segs = []
+for i in range(149):
+    house = list_houses[i]
+    index = connected_battery[i]
+    battery_nmr = Batteries[index]
+    x1 = house.get_xval()
+    y1 = house.get_yval()
+    x2 = battery_nmr[0]
+    y2 = battery_nmr[1]
+    segs.append(((x1, y1), (x1, y2)))
+    segs.append(((x1, y2), (x2, y2)))
+# adding the entire collection to the grid
+ln_coll = LineCollection(segs)
+ax.add_collection(ln_coll)
 
 # turn on the grid
 ax.grid()

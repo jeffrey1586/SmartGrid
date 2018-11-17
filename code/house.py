@@ -2,9 +2,9 @@ class House(object):
 
     """Defines the house class."""
     def __init__(self, xvalue, yvalue, output):
-            self.xvalue = xvalue
-            self.yvalue = yvalue
-            self.output = output
+        self.xvalue = xvalue
+        self.yvalue = yvalue
+        self.output = output
 
     # calculating battery capacity and cable lengths
     def calculate(self, x, y, output, list_batteries):
@@ -45,9 +45,15 @@ class House(object):
 
                 # substract output from other closest battery
                 new_capacity = batteries[battery_index].set_capacity(output)
-        return (shortest_length)
+        return (battery_index)
 
+    #
+    def get_xval(self):
+        return self.xvalue
+    #
+    def get_yval(self):
+        return self.yvalue
+
+    #
     def __str__(self):
         return f"{self.xvalue}, {self.yvalue}, {self.output}"
-
-        #super(, self).__init__()
