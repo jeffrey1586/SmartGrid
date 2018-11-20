@@ -1,16 +1,3 @@
-# import matplotlib.pyplot as plt
-
-# x1, y1 = [1, 1], [1, 4]
-# x2, y2 = [1, 4],[4, 4]
-# plt.plot(x1, y1, x2, y2)
-# plt.show()
-
-# curr_battery = list_batteries[battery_index]
-# x1, y1 = [x_value, x_value], [y_value, curr_battery.get_yval()]
-# x2, y2 = [x_value, curr_battery.get_xval()], [curr_battery.get_yval(), curr_battery.get_yval()]
-# plt.plot(x1, y1, x2, y2)
-# plt.show()
-
 # import pandas as pd
 # import matplotlib.pyplot as plt
 # import numpy as np
