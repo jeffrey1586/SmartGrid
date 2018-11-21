@@ -6,19 +6,19 @@ class Battery(object):
         self.yvalue = yvalue
         self.capacity = capacity
 
-    #
+    # get method that returns the x coordinate from the battery 
     def get_xval(self):
         return self.xvalue
 
-    #
+    # get method that returns the y coordinate from the battery
     def get_yval(self):
         return self.yvalue
 
-    #
+    # get method that returns capacity the battery
     def get_capacity(self):
         return self.capacity
 
-    #
+    # method that adjust the capacity from the battery
     def set_capacity(self, output):
         self.capacity = float(self.capacity) - float(output)
         return self.capacity

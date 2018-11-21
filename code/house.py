@@ -48,19 +48,22 @@ class House(object):
                 new_capacity = batteries[battery_index].set_capacity(output)
         return (battery_index, shortest_length)
 
-    #
+    # get method that returns the x coordinate from the house
     def get_xval(self):
         return self.xvalue
-    #
+
+    # get method that returns the y coordinate from the house
     def get_yval(self):
         return self.yvalue
 
+    # get method that returns the output from the house
     def get_output(self):
         return self.output
 
+    # get method that returns the id from the house
     def get_id(self):
-        return self.id    
+        return self.id
 
-    #
+    # methods that returns the values when printing house object
     def __str__(self):
         return f"{self.xvalue}, {self.yvalue}, {self.output}"
