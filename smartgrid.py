@@ -42,6 +42,7 @@ class SmartGrid():
         # making house instances and adding to list
         self.connected_battery = []
         counter = 0
+        totallength = 0
         for line in housefile:
             if counter != 0:
                 values = line.split(",")
@@ -53,8 +54,10 @@ class SmartGrid():
 
                 # calculate length to closest battery
                 battery_index = new_house.calculate(x_value, y_value, output, self.batteries)
-                self.connected_battery.append(battery_index)
+                self.connected_battery.append(battery_index[0])
+                totallength += battery_index[1]
             counter = 1
+        print(totallength)
         return list_houses
 
     def visualize_grid(self):
@@ -64,7 +67,7 @@ class SmartGrid():
 
         # setting the x and y coordinates from the houses in the plot
         fig, ax = plt.subplots()
-        housefile.plot(kind = 'scatter', x = 'x', y = 'y', ax = ax, color='grey')
+        housefile.plot(kind = 'scatter', x = 'x', y = 'y', ax = ax, color='purple')
 
         #load in battery coordinates
         Batteries = []

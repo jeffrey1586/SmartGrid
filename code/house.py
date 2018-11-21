@@ -45,7 +45,7 @@ class House(object):
 
                 # substract output from other closest battery
                 new_capacity = batteries[battery_index].set_capacity(output)
-        return (battery_index)
+        return (battery_index, shortest_length)
 
     #
     def get_xval(self):
