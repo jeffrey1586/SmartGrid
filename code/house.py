@@ -1,7 +1,8 @@
 class House(object):
 
     """Defines the house class."""
-    def __init__(self, xvalue, yvalue, output):
+    def __init__(self, id, xvalue, yvalue, output):
+        self.id = id
         self.xvalue = xvalue
         self.yvalue = yvalue
         self.output = output
@@ -53,6 +54,12 @@ class House(object):
     #
     def get_yval(self):
         return self.yvalue
+
+    def get_output(self):
+        return self.output
+
+    def get_id(self):
+        return self.id    
 
     #
     def __str__(self):
