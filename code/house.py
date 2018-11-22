@@ -8,9 +8,12 @@ class House(object):
         self.output = output
 
     # calculating battery capacity and cable lengths
-    def calculate(self, x, y, output, list_batteries):
+    def calculate_all(self, house, list_batteries):
         batteries = list_batteries
         distances = []
+        x = house.get_xval()
+        y = house.get_yval()
+        output = house.get_output()
 
         # get smallest distance out of array distances
         for battery in batteries:
@@ -22,13 +25,23 @@ class House(object):
             # calculating distance and appending
             distTotal = checkx + checky
             distances.append(distTotal)
+        return (distances, output)
+
+    #
+    def calculate_min(self, distances):
 
         # shortest distance from house to battery
         shortest_length = min(distances)
+        return(shortest_length)
+
+    #
+    def check_capacity(self, distances, shortest_length, output, list_batteries):
+        
         # getting battery closest to house
         battery_index = distances.index(shortest_length)
 
         # adjusting battery capacity
+        batteries = list_batteries
         new_capacity = batteries[battery_index].set_capacity(output)
 
         #checking if capacity is negative
@@ -47,6 +60,7 @@ class House(object):
                 # substract output from other closest battery
                 new_capacity = batteries[battery_index].set_capacity(output)
         return (battery_index, shortest_length)
+
 
     # get method that returns the x coordinate from the house
     def get_xval(self):

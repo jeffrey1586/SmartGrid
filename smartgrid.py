@@ -12,6 +12,7 @@ class SmartGrid():
 
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
+        self.connecting = self.connecting()
         self.visualize = self.visualize_grid()
 
         self.connected_battery = self.connected_battery
@@ -44,7 +45,6 @@ class SmartGrid():
         self.connected_battery = []
         counter = 0
         id = 1
-        total_length = 0
         for line in housefile:
             if counter != 0:
                 values = line.split(",")
@@ -55,20 +55,34 @@ class SmartGrid():
                 list_houses.append(new_house)
                 id += 1
             counter = 1
-
-        # change order of array list_houses
-        shuffle(list_houses)
-
-        for house in list_houses:
-            # calculate length to closest battery
-            battery_index = house.calculate(house.get_xval(), house.get_yval(), house.get_output(), self.batteries)
-            self.connected_battery.append(battery_index[0])
-            total_length += battery_index[1]
-
-        if total_length < 3900:
-            print(total_length)
         return list_houses
 
+    #
+    def connecting(self):
+
+        # change order of array list_houses
+        shuffle(self.houses)
+
+        total_length = 0
+        for house in self.houses:
+            # calculate length to closest battery
+            all_distances = house.calculate_all(house, self.batteries)
+
+            # calculate length to closest battery
+            min_distance = house.calculate_min(all_distances[0])
+
+            # adjusting battery capacity and checking for overload
+            index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+            self.connected_battery.append(index_battery[0])
+            total_length += index_battery[1]
+
+        #
+        if total_length < 4500:
+            print(total_length)
+
+        return total_length
+
+    #
     def visualize_grid(self):
 
         # reading the house file
@@ -116,5 +130,5 @@ class SmartGrid():
         plt.show()
 
 if __name__ == "__main__":
-    for i in range(50):
+    for i in range(1):
         smartgrid = SmartGrid()
