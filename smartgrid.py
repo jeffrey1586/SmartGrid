@@ -12,7 +12,7 @@ class SmartGrid():
 
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
-        # self.visualize = self.visualize_grid()
+        self.visualize = self.visualize_grid()
 
         self.connected_battery = self.connected_battery
 
@@ -65,8 +65,10 @@ class SmartGrid():
             self.connected_battery.append(battery_index[0])
             total_length += battery_index[1]
 
-        if total_length < 3900:
+        if total_length < 5000:
             print(total_length)
+            #for house in list_houses:
+                #print(house.get_id())
         return list_houses
 
     def visualize_grid(self):
@@ -116,5 +118,5 @@ class SmartGrid():
         plt.show()
 
 if __name__ == "__main__":
-    for i in range(50):
+    for i in range(5000):
         smartgrid = SmartGrid()
