@@ -12,7 +12,7 @@ class SmartGrid():
 
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
-        # self.visualize = self.visualize_grid()
+        self.visualize = self.visualize_grid()
 
         self.connected_battery = self.connected_battery
 

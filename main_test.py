@@ -53,8 +53,8 @@ for i in range(50000):
 
     if total_length < 3700:
         # # print id volgorde
-        # for house in list_houses:
-        #     print(house.get_id())
+        for house in list_houses:
+            print(house.get_id())
         print("total: ", total_length)
 
         # # reading the house file
