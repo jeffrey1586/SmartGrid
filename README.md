@@ -16,6 +16,20 @@ waarbij n het aantal huizen in de smartgrid is. Deze functie kan voor a en b als
 
 Dit uitfilteren werkt echter alleen bij algoritmes die deze configuraties ook daadwerkelijk links laten liggen.
 
+**De scorefunctie** voor fase a) en b) kan zo gedefinieerd worden: 
+
+    kabellengte * 9 + 25 000
+
+In deze is de kabellengte het aantal grids dat alle kabels beslaan. Per gridsegment kost een kabel €9 In de wijken voor a en b zijn altijd 5 batterijen aanwezig, die per stuk €5000 kosten: 5 * €5000 = €25 000. 
+
+De upperbound van deze scorefunctie, ofwel de hoogst mogelijke kosten die een configuratie zou kunnen halen (en daarmee de slechtste score), is in de onderstaande formule weergegeven. Hierbij is x de kabellengte tussen het huis en de batterij in een wijk die het verst van elkaar af liggen. n is het aantal huizen in de wijk.
+
+    (n * x) * 9 + 25 000 
+
+De lowerbound, ofwel de laagst mogelijke kosten die een configuratie zou kunnen halen (en dus de beste score), is in onderstaande formule weergegeven. De kortste afstand die een huis af zou kunnen leggen is 1; n is het aantal huizen in de wijk. 
+
+    (n * 1) * 9 + 25 000 
+
 ## Aan de slag (Getting Started)
 
 ### Vereisten (Prerequisites)
