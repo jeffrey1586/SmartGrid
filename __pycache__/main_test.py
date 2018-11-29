@@ -93,11 +93,10 @@ class SmartGrid():
                 house.set_batteryId(index_battery[0])
 
                 total_length += index_battery[1]
-            print(total_length)
 
 
         else:
-            #shuffle(optimal)
+            # shuffle(optimal)
             total_length = 0
             for house in optimal:
                 # calculate length to closest battery
@@ -177,5 +176,5 @@ class SmartGrid():
 
 if __name__ == "__main__":
 
-    for i in range(1):
+    for i in range(5):
         smartgrid = SmartGrid()
