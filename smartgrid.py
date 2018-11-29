@@ -6,10 +6,16 @@ from code.house import House
 from code.battery import Battery
 from random import shuffle
 
+optimal = []
+optimallength = 0
+count = 0
+# visualise_count = 0
+
 class SmartGrid():
 
     def __init__(self):
-
+        # global visualise_count
+        # visualise_count += 1
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
@@ -22,9 +28,10 @@ class SmartGrid():
 
         # reading the battery file for 'wijk1'
         batteryfile= open("data/wijk1_batterijen.txt", "r")
-        list_batteries = []
+
         # making battery instances and adding to list
         counter = 0
+        list_batteries = []
         for line in batteryfile:
             if counter != 0:
                 check = line.split()
@@ -35,16 +42,17 @@ class SmartGrid():
             counter = 1
         return list_batteries
 
+    # load method for Houses
     def load_houses(self):
 
         # reading the house file
         housefile= open("data/wijk1_huizen.csv", "r")
 
-        list_houses = []
         # making house instances and adding to list
-        self.connected_battery = []
-        counter = 0
         id = 1
+        counter = 0
+        list_houses = []
+        self.connected_battery = []
         for line in housefile:
             if counter != 0:
                 values = line.split(",")
@@ -57,32 +65,60 @@ class SmartGrid():
             counter = 1
         return list_houses
 
-    #
+    # method that connects houses with batteries
     def connecting(self):
 
         # change order of array list_houses
-        shuffle(self.houses)
+        global count
+        global optimal
+        global optimallength
+        if count == 0:
+            # shuffle(self.houses)
+            total_length = 0
+            for house in self.houses:
+                # calculate length to closest battery
+                all_distances = house.calculate_all(house, self.batteries)
 
-        total_length = 0
-        for house in self.houses:
-            # calculate length to closest battery
-            all_distances = house.calculate_all(house, self.batteries)
+                # calculate length to closest battery
+                min_distance = house.calculate_min(all_distances[0])
 
-            # calculate length to closest battery
-            min_distance = house.calculate_min(all_distances[0])
+                # adjusting battery capacity and checking for overload
+                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+                self.connected_battery.append(index_battery[0])
+                total_length += index_battery[1]
+            print(self.connected_battery)
 
-            # adjusting battery capacity and checking for overload
-            index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-            self.connected_battery.append(index_battery[0])
-            total_length += index_battery[1]
+        else:
+            shuffle(optimal)
+            total_length = 0
+            for house in optimal:
+                # calculate length to closest battery
+                all_distances = house.calculate_all(house, self.batteries)
+
+                # calculate length to closest battery
+                min_distance = house.calculate_min(all_distances[0])
+
+                # adjusting battery capacity and checking for overload
+                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+                self.connected_battery.append(index_battery[0])
+                total_length += index_battery[1]
 
         #
-        if total_length < 4500:
-            print(total_length)
+        if count == 0:
+            optimal = self.houses
+            optimallength = total_length
+            count = 1
+
+        else:
+            if optimallength > total_length:
+                optimallength = total_length
+                optimal = self.houses
+                print(optimallength)
+
 
         return total_length
 
-    #
+    # method that visualizes the grids
     def visualize_grid(self):
 
         # reading the house file
@@ -130,5 +166,5 @@ class SmartGrid():
         plt.show()
 
 if __name__ == "__main__":
-    for i in range(2):
+    for i in range(1):
         smartgrid = SmartGrid()
