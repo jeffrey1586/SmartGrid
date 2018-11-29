@@ -2,8 +2,8 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
-from code.classes.house import House
-from code.battery import Battery
+from code.classes.houseTwo import House
+from code.classes.batteryTwo import Battery
 from random import shuffle
 
 """
@@ -44,7 +44,7 @@ class SmartGrid():
             counter = 1
         return list_batteries
 
-    # load method for houses
+    # load method for Houses
     def load_houses(self):
 
         # reading the house file
@@ -60,15 +60,14 @@ class SmartGrid():
                 x_value = values[0]
                 y_value = values[1]
                 output = values[2]
-                new_house = House(id, x_value, y_value, output, 0)
+                new_house = House(id, x_value, y_value, output, 10)
                 list_houses.append(new_house)
                 id += 1
             counter = 1
         return list_houses
 
-    # connecting batteries to houses
+    # method that connects houses with batteries
     def connecting(self):
-
 
         global count
         global optimal
@@ -78,55 +77,58 @@ class SmartGrid():
             # change order of array list_houses
             #shuffle(self.houses)
             total_length = 0
-            for house in self.houses:
+            battery_index = 0
+            counter = 0
+            i = 0
 
-                # calculate length to closest battery
-                all_distances = house.calculate_all(house, self.batteries)
+            for battery in self.batteries:
+                if counter == 0:
+                    # calculate length to closest battery
+                    all_distances = battery.calculate_all(battery, self.houses)
+                    distances = all_distances
+                    counter = 1
 
-                # calculate length to closest battery
-                min_distance = house.calculate_min(all_distances[0])
+                new_capacity = battery.get_capacity()
 
-                # adjusting battery capacity and checking for overload
-                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+                # connect houses until capacity is full
+                while (float(new_capacity) > 0 and i < 150):
+                    i += 1
+                    # calculate length to closest battery
+                    min_distance = battery.calculate_min(distances)
 
-                # add the batterynumber to houseobject
-                house.set_batteryId(index_battery[0])
-
-                total_length += index_battery[1]
-
-
-        else:
-            # shuffle(optimal)
-            total_length = 0
-            for house in optimal:
-                # calculate length to closest battery
-                all_distances = house.calculate_all(house, self.batteries)
-
-                # calculate length to closest battery
-                min_distance = house.calculate_min(all_distances[0])
-
-                # adjusting battery capacity and checking for overload
-                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-
-                # add the batterynumber to houseobject
-                house.set_batteryId(index_battery[0])
-                total_length += index_battery[1]
+                    # adjusting battery capacity and checking for overload
+                    capacity = battery.check_capacity(distances, min_distance, new_capacity, self.houses, battery_index, battery)
+                    new_capacity = capacity[0]
+                    house_output = capacity[1]
+                    new_house = capacity[2]
+                    distances = capacity[3]
+                    house_index = capacity[4]
+                    total_length += min_distance
 
 
-        if count == 0:
-            optimal = self.houses
-            optimallength = total_length
-            count = 1
+                    if new_capacity < 0:
 
-        else:
-            if optimallength > total_length:
-                optimallength = total_length
-                optimal = self.houses
-                print(optimallength)
+                        # add output back to negative battery
+                        new_capacity = battery.set_capacity(-1 * float(house_output))
+                        all_capacities = []
+                        for cap_battery in self.batteries:
+                            all_capacities.append(float(cap_battery.get_capacity()))
 
+                        # get new battery
+                        temp_cap = max(all_capacities)
+                        new_index = all_capacities.index(temp_cap)
+                        new_battery = self.batteries[new_index]
+
+                        # substract output from other closest battery
+                        new_capacity = new_battery.set_capacity(house_output)
+                        new_house.set_batteryId(new_index)
+                        distances[house_index] = 10000
+
+                battery_index += 1
+            print(total_length)
         return total_length
 
-    # method for visualizing grid
+    # method that visualizes the grids
     def visualize_grid(self):
 
         # reading the house file
@@ -154,6 +156,7 @@ class SmartGrid():
         for i in range(149):
             house = self.houses[i]
             index = house.get_batteryId()
+
             battery_nmr = Batteries[index]
             x1 = house.get_xval()
             y1 = house.get_yval()
@@ -176,5 +179,5 @@ class SmartGrid():
 
 if __name__ == "__main__":
 
-    for i in range(5):
+    for i in range(1):
         smartgrid = SmartGrid()
