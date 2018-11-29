@@ -2,7 +2,7 @@
 
 Veel huizen hebben tegenwoordig zonnepanelen om zelf energie mee te produceren. Deze productie is echter vaak groter dan de consumptie, waardoor de stroom die overblijft in batterijen opgeslagen moet worden. In SmartGrid worden drie wijken gevisualiseerd met elk vijf batterijen, waarbij de opslag geregeld dient te worden: in deze code hebben wij oplossingen gevonden voor dit probleem, dat vier fases kent.
 
-![Wijk 1 met kabellengte 3772](https://github.com/jeffrey1586/SmartGrid/blob/master/doc/wijk1_3772.png)  
+![Wijk 1 met kabellengte 3772](https://github.com/jeffrey1586/SmartGrid/blob/master/doc/visualization%20standard%20wijk1.png)  
 
 In fase a) dienen alle huizen aan de batterijen te worden aangesloten, zonder dat er batterijen overladen worden. In fase b) wordt die configuratie geoptimaliseerd. Dat wil zeggen, dat de aansluiting met zo min mogelijk kabel plaats vindt. In fase c) kunnen de batterijen worden verplaatst, met als doel de SmartGrids verder te optimaliseren. In fase d) worden tot slot de batterijen vervangen door andersoortige batterijen, die in capaciteit en prijs verschillen.
 
