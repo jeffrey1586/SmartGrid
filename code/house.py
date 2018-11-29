@@ -1,11 +1,12 @@
 class House(object):
 
     """Defines the house class."""
-    def __init__(self, id, xvalue, yvalue, output):
+    def __init__(self, id, xvalue, yvalue, output, batteryId):
         self.id = id
         self.xvalue = xvalue
         self.yvalue = yvalue
         self.output = output
+        self.batteryId = batteryId
 
     # calculating battery capacity and cable lengths
     def calculate_all(self, house, list_batteries):
@@ -36,7 +37,7 @@ class House(object):
 
     #
     def check_capacity(self, distances, shortest_length, output, list_batteries):
-        
+
         # getting battery closest to house
         battery_index = distances.index(shortest_length)
 
@@ -78,6 +79,15 @@ class House(object):
     def get_id(self):
         return self.id
 
+    def get_batteryId(self):
+        return self.batteryId
+
+    #
+    def set_batteryId(self, index):
+        self.batteryId = index
+        return self.batteryId
+
+
     # methods that returns the values when printing house object
     def __str__(self):
-        return f"{self.xvalue}, {self.yvalue}, {self.output}"
+        return f"{self.xvalue}, {self.yvalue}, {self.output}, {self.batteryId}"
