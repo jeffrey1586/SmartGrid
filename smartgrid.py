@@ -6,29 +6,32 @@ from code.house import House
 from code.battery import Battery
 from random import shuffle
 
+"""
+initialising variables, filling when better smartgrid is found
+optimal for best sequence in list_houses, optimallength for best cabledistance
+"""
 optimal = []
 optimallength = 0
+
+# initialising counters for comparing
 count = 0
-# visualise_count = 0
 
 class SmartGrid():
 
     def __init__(self):
-        # global visualise_count
-        # visualise_count += 1
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        # self.visualize = self.visualize_grid()
+        self.visualize = self.visualize_grid()
 
-        self.connected_battery = self.connected_battery
 
     # load method for Batteries
     def load_batteries(self):
 
-        # reading the battery file for 'wijk1'
+        # reading the battery file
         batteryfile= open("data/wijk1_batterijen.txt", "r")
         list_batteries = []
+
         # making battery instances and adding to list
         counter = 0
         for line in batteryfile:
@@ -41,39 +44,42 @@ class SmartGrid():
             counter = 1
         return list_batteries
 
+    # load method for houses
     def load_houses(self):
 
         # reading the house file
         housefile= open("data/wijk1_huizen.csv", "r")
-
         list_houses = []
-        # making house instances and adding to list
-        self.connected_battery = []
         counter = 0
         id = 1
+
+        # making house instances and adding to list
         for line in housefile:
             if counter != 0:
                 values = line.split(",")
                 x_value = values[0]
                 y_value = values[1]
                 output = values[2]
-                new_house = House(id, x_value, y_value, output)
+                new_house = House(id, x_value, y_value, output, 0)
                 list_houses.append(new_house)
                 id += 1
             counter = 1
         return list_houses
 
-    #
+    # connecting batteries to houses
     def connecting(self):
 
-        # change order of array list_houses
+
         global count
         global optimal
         global optimallength
         if count == 0:
-            shuffle(self.houses)
+
+            # change order of array list_houses
+            #shuffle(self.houses)
             total_length = 0
             for house in self.houses:
+
                 # calculate length to closest battery
                 all_distances = house.calculate_all(house, self.batteries)
 
@@ -82,10 +88,15 @@ class SmartGrid():
 
                 # adjusting battery capacity and checking for overload
                 index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-                self.connected_battery.append(index_battery[0])
+
+                # add the batterynumber to houseobject
+                house.set_batteryId(index_battery[0])
+
                 total_length += index_battery[1]
+
+
         else:
-            shuffle(optimal)
+            # shuffle(optimal)
             total_length = 0
             for house in optimal:
                 # calculate length to closest battery
@@ -96,10 +107,12 @@ class SmartGrid():
 
                 # adjusting battery capacity and checking for overload
                 index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-                self.connected_battery.append(index_battery[0])
+
+                # add the batterynumber to houseobject
+                house.set_batteryId(index_battery[0])
                 total_length += index_battery[1]
 
-        #
+
         if count == 0:
             optimal = self.houses
             optimallength = total_length
@@ -111,10 +124,9 @@ class SmartGrid():
                 optimal = self.houses
                 print(optimallength)
 
-
         return total_length
 
-    #
+    # method for visualizing grid
     def visualize_grid(self):
 
         # reading the house file
@@ -138,19 +150,20 @@ class SmartGrid():
         ax.plot(xBat, yBat, 's', color='red')
 
         # appending cables lines to lineCollection
-        segs = []
+        cables = []
         for i in range(149):
             house = self.houses[i]
-            index = self.connected_battery[i]
+            index = house.get_batteryId()
             battery_nmr = Batteries[index]
             x1 = house.get_xval()
             y1 = house.get_yval()
             x2 = battery_nmr[0]
             y2 = battery_nmr[1]
-            segs.append(((x1, y1), (x1, y2)))
-            segs.append(((x1, y2), (x2, y2)))
+            cables.append(((x1, y1), (x1, y2)))
+            cables.append(((x1, y2), (x2, y2)))
+
         # adding the entire collection to the grid
-        ln_coll = LineCollection(segs)
+        ln_coll = LineCollection(cables)
         ax.add_collection(ln_coll)
 
         # turn on the grid
@@ -163,5 +176,5 @@ class SmartGrid():
 
 if __name__ == "__main__":
 
-    for i in range(100000):
+    for i in range(5):
         smartgrid = SmartGrid()
