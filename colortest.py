@@ -25,7 +25,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        self.visualize = self.visualize_grid()
+        #self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -79,7 +79,7 @@ class SmartGrid():
         if count == 0:
 
             # change order of array list_houses
-            #shuffle(self.houses)
+            shuffle(self.houses)
             total_length = 0
             for house in self.houses:
 
@@ -98,37 +98,37 @@ class SmartGrid():
                 total_length += index_battery[1]
             lengths.append(total_length)
 
-        else:
-            #shuffle(optimal)
-            total_length = 0
-            for house in optimal:
-                # calculate length to closest battery
-                all_distances = house.calculate_all(house, self.batteries)
+        # else:
+        #     #shuffle(optimal)
+        #     total_length = 0
+        #     for house in optimal:
+        #         # calculate length to closest battery
+        #         all_distances = house.calculate_all(house, self.batteries)
+        #
+        #         # calculate length to closest battery
+        #         min_distance = house.calculate_min(all_distances[0])
+        #
+        #         # adjusting battery capacity and checking for overload
+        #         index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+        #
+        #         # add the batterynumber to houseobject
+        #         house.set_batteryId(index_battery[0])
+        #         total_length += index_battery[1]
+        #
+        #     lengths.append(total_length)
 
-                # calculate length to closest battery
-                min_distance = house.calculate_min(all_distances[0])
 
-                # adjusting battery capacity and checking for overload
-                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-
-                # add the batterynumber to houseobject
-                house.set_batteryId(index_battery[0])
-                total_length += index_battery[1]
-
-            lengths.append(total_length)
-
-
-        if count == 0:
-            optimal = self.houses
-            optimallength = total_length
-            count = 1
-            #lengths.append(optimallength)
-
-        else:
-            if optimallength > total_length:
-                optimallength = total_length
-                optimal = self.houses
-                #lengths.append(total_length)
+        # if count == 0:
+        #     optimal = self.houses
+        #     optimallength = total_length
+        #     count = 1
+        #     #lengths.append(optimallength)
+        #
+        # else:
+        #     if optimallength > total_length:
+        #         optimallength = total_length
+        #         optimal = self.houses
+        #         #lengths.append(total_length)
 
         return total_length
 
@@ -224,11 +224,11 @@ class SmartGrid():
 
 if __name__ == "__main__":
 
-    for i in range(1):
+    for i in range(100):
         smartgrid = SmartGrid()
 
-    # writing to the csv file
-    #with open('resultaten/testresults.csv', mode='w') as results_file:
-        # results_writer = csv.writer(results_file)
-        # export_data = zip_longest(*[lengths], fillvalue = '')
-        # results_writer.writerows(export_data)
+    #writing to the csv file
+    with open('resultaten/testresults.csv', mode='w') as results_file:
+         results_writer = csv.writer(results_file)
+         export_data = zip_longest(*[lengths], fillvalue = '')
+         results_writer.writerows(export_data)

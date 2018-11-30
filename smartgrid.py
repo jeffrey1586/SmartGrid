@@ -5,15 +5,20 @@ from matplotlib.collections import LineCollection
 from code.classes.house import House
 from code.battery import Battery
 from random import shuffle
+import itertools
+from itertools import zip_longest
+import csv
 
 """
 initialising variables, filling when better smartgrid is found
-optimal for best sequence in list_houses, optimallength for best cabledistance
+optimalorder for best sequence in list_houses, optimallength for best cabledistance
 """
-optimal = []
+optimalorder= []
 optimallength = 0
+lengths = []
+total_length = 0
 
-# initialising counters for comparing
+# initialising counter for comparing
 count = 0
 
 class SmartGrid():
@@ -22,7 +27,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        self.visualize = self.visualize_grid()
+        #self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -69,14 +74,16 @@ class SmartGrid():
     # method that connects houses with batteries
     def connecting(self):
 
-
         global count
-        global optimal
+        global optimalorder
         global optimallength
+        global total_length
+
+        # first shuffle
         if count == 0:
 
             # change order of array list_houses
-            #shuffle(self.houses)
+            shuffle(self.houses)
             total_length = 0
             for house in self.houses:
 
@@ -92,14 +99,14 @@ class SmartGrid():
                 # add the batterynumber to houseobject
                 house.set_batteryId(index_battery[0])
 
+                # add distance to total_length
                 total_length += index_battery[1]
-            print(total_length)
 
-
-        else:
-            #shuffle(optimal)
+        # not first shufle
+        elif count > 0 and count < 5:
+            shuffle(optimalorder)
             total_length = 0
-            for house in optimal:
+            for house in optimalorder:
                 # calculate length to closest battery
                 all_distances = house.calculate_all(house, self.batteries)
 
@@ -113,29 +120,88 @@ class SmartGrid():
                 house.set_batteryId(index_battery[0])
                 total_length += index_battery[1]
 
+        # swap the optimal listorder found after shuffling
+        elif count > 5:
 
+            a = [1, 2, 3]
+
+            counti = 5
+
+            # iterate over different listorders, get best
+            for i in itertools.permutations(a):
+                print(i)
+
+
+
+
+        # first shuffle has optimal order and length
         if count == 0:
-            optimal = self.houses
-            optimallength = total_length
-            count = 1
+            optimalorder = self.houses
+            lengths.append(total_length)
 
-        else:
+        elif count > 0 and count < 5:
+
+            lengths.append(total_length)
+
+            # if last configurationlength was worse, change optimals
             if optimallength > total_length:
                 optimallength = total_length
-                optimal = self.houses
+                optimalorder = self.houses
                 print(optimallength)
+
+        print(count)
+        count += 1
 
         return total_length
 
     # method that visualizes the grids
     def visualize_grid(self):
 
-        # reading the house file
-        housefile = pd.read_csv("data/wijk1_huizen.csv")
-
-        # setting the x and y coordinates from the houses in the plot
+        # setting up plots
         fig, ax = plt.subplots()
-        housefile.plot(kind = 'scatter', x = 'x', y = 'y', ax = ax, color='grey')
+
+        # divide houses into lists, plot those with different colours
+        aHouses = []
+        bHouses = []
+        cHouses = []
+        dHouses = []
+        eHouses = []
+
+        for k in range(150):
+            house_nmr = self.houses[k]
+            x_house = int(house_nmr.get_xval())
+            y_house = int(house_nmr.get_yval())
+            batt = int(house_nmr.get_batteryId())
+
+            if batt == 0:
+                aHouses.append((x_house, y_house))
+                xHouse = list(map(lambda x: x[0], aHouses))
+                yHouse = list(map(lambda x: x[1], aHouses))
+                ax.plot(xHouse, yHouse, '*', color='blue')
+
+            elif batt == 1:
+                bHouses.append((x_house, y_house))
+                xHouse = list(map(lambda x: x[0], bHouses))
+                yHouse = list(map(lambda x: x[1], bHouses))
+                ax.plot(xHouse, yHouse, '*', color='lightgreen')
+
+            elif batt == 2:
+                cHouses.append((x_house, y_house))
+                xHouse = list(map(lambda x: x[0], cHouses))
+                yHouse = list(map(lambda x: x[1], cHouses))
+                ax.plot(xHouse, yHouse, '*', color='purple')
+
+            elif batt == 3:
+                dHouses.append((x_house, y_house))
+                xHouse = list(map(lambda x: x[0], dHouses))
+                yHouse = list(map(lambda x: x[1], dHouses))
+                ax.plot(xHouse, yHouse, '*', color='orange')
+
+            elif batt == 4:
+                eHouses.append((x_house, y_house))
+                xHouse = list(map(lambda x: x[0], eHouses))
+                yHouse = list(map(lambda x: x[1], eHouses))
+                ax.plot(xHouse, yHouse, '*', color='black')
 
         #load in battery coordinates
         Batteries = []
@@ -177,5 +243,11 @@ class SmartGrid():
 
 if __name__ == "__main__":
 
-    for i in range(1):
+    for i in range(7):
         smartgrid = SmartGrid()
+
+    #writing to the csv file
+    with open('resultaten/testresults.csv', mode='w') as results_file:
+         results_writer = csv.writer(results_file)
+         export_data = zip_longest(*[lengths], fillvalue = '')
+         results_writer.writerows(export_data)
