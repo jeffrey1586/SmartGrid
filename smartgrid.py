@@ -76,7 +76,7 @@ class SmartGrid():
         if count == 0:
 
             # change order of array list_houses
-            #shuffle(self.houses)
+            shuffle(self.houses)
             total_length = 0
             for house in self.houses:
 
@@ -97,7 +97,7 @@ class SmartGrid():
 
 
         else:
-            #shuffle(optimal)
+            shuffle(optimal)
             total_length = 0
             for house in optimal:
                 # calculate length to closest battery
@@ -177,5 +177,5 @@ class SmartGrid():
 
 if __name__ == "__main__":
 
-    for i in range(1):
+    for i in range(5):
         smartgrid = SmartGrid()

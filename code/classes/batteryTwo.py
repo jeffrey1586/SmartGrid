@@ -7,51 +7,53 @@ class Battery(object):
         self.capacity = capacity
 
     # calculating battery capacity and cable lengths
-    def calculate_all(self, battery, list_houses):
-        houses = list_houses
+    def calculate_all(self, battery, connecting_houses):
         distances = []
         x = battery.get_xval()
         y = battery.get_yval()
+        i = 0
 
-        # get smallest distance out of array distances
-        for house in houses:
-            x_value = house.get_xval()
-            y_value = house.get_yval()
-            checkx = abs(int(x)-int(x_value))
-            checky = abs(int(y)-int(y_value))
+        # calculating distances from battery to all houses
+        for house in connecting_houses:
+            # only calculate distance if house is not yet connected
+            if (house.get_batteryId() == 10):
+                x_value = house.get_xval()
+                y_value = house.get_yval()
+                checkx = abs(int(x)-int(x_value))
+                checky = abs(int(y)-int(y_value))
+                distTotal = checkx + checky
+            else:
+                distTotal = 10000
 
             # calculating distance and appending
-            distTotal = checkx + checky
             distances.append(distTotal)
 
         return distances
 
-    #
+    # search to closest houses for the batteries
     def calculate_min(self, distances):
 
-        # shortest distance from house to battery
-        shortest_length = min(distances)
-        return(shortest_length)
+        # searching house closest to battery
+        length = min(distances)
+        house_index = distances.index(length)
 
-    #
-    def check_capacity(self, distances, shortest_length, capacity, list_houses, battery_nmr, battery):
+        return(house_index, length)
 
-        # getting house closest to battery
-        house_index = distances.index(shortest_length)
+    # adjusting battery capacity and connecting house
+    def check_capacity(self, connecting_houses, house_index, battery, distances, battery_nmr, total_length, length):
 
-        # getting house information for connection
-        new_house = list_houses[house_index]
+        # adjusting battery capacity
+        new_house = connecting_houses[house_index]
         house_output = new_house.get_output()
+        new_capacity = battery.set_capacity(house_output)
 
-        # adjusting capacity
-        capacity = battery.set_capacity(house_output)
-
-        if (capacity > 0):
-            # adding the connected battery index to house object
+        # connecting house to battery
+        if (new_capacity > 0):
             new_house.set_batteryId(battery_nmr)
             distances[house_index] = 10000
+            total_length += length
 
-        return (capacity, house_output, new_house, distances, house_index)
+        return (new_capacity, house_output, total_length, new_house)
 
     # get method that returns the x coordinate from the battery
     def get_xval(self):
