@@ -28,14 +28,14 @@ class House(object):
             distances.append(distTotal)
         return (distances, output)
 
-    #
+    # get the shortest battery distance
     def calculate_min(self, distances):
 
         # shortest distance from house to battery
         shortest_length = min(distances)
         return(shortest_length)
 
-    #
+    #   search battery to connect to
     def check_capacity(self, distances, shortest_length, output, list_batteries):
 
         # getting battery closest to house
@@ -62,6 +62,19 @@ class House(object):
                 new_capacity = batteries[battery_index].set_capacity(output)
         return (battery_index, shortest_length)
 
+    # calculate tot length of grid
+    def total(self, list_houses, list_batteries):
+
+        total = 0
+        for house in list_houses:
+            index = house.get_batteryId()
+            battery = list_batteries[index]
+
+            x_diff = abs(int(house.get_xval()) - int(battery.get_xval()))
+            y_diff = abs(int(house.get_yval()) - int(battery.get_yval()))
+            tot = x_diff + y_diff
+            total += tot
+        return total
 
     # get method that returns the x coordinate from the house
     def get_xval(self):
