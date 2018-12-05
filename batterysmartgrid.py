@@ -22,7 +22,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        self.visualize = self.visualize_grid()
+        # self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -103,36 +103,23 @@ class SmartGrid():
                     total_length = capacity[2]
                     new_house = capacity[3]
 
+                # if ouput does not fit in battery capacity
                 if (new_capacity < 0):
-                    new_capacity = battery.set_capacity(-1 * float(house_output))
-
-                    all_capacities = []
-                    for cap_battery in self.batteries:
-                        all_capacities.append(float(cap_battery.get_capacity()))
-
-                    # get new battery
-                    temp_cap = max(all_capacities)
-                    new_index = all_capacities.index(temp_cap)
-                    new_battery = self.batteries[new_index]
-
-                    # substract output from other closest battery
-                    new_capacity = new_battery.set_capacity(house_output)
-                    print(house_output)
-                    new_house.set_batteryId(new_index)
-                    distances[house_index] = 10000
+                        new_capacity = battery.set_capacity(-1 * float(house_output))
 
                 battery_nmr += 1
 
-            # all_id = []
-            # for house in self.houses:
-            #     all_id.append(house.get_batteryId())
-            # print(all_id)
+            print(new_house.get_batteryId(), new_house.get_output())
+            all_id = []
+            for house in self.houses:
+                all_id.append(house.get_batteryId())
+            print(all_id)
 
-            # all_capacities = []
-            # for cap_battery in self.batteries:
-            #     all_capacities.append(float(cap_battery.get_capacity()))
-            # print(all_capacities)
-            # print(total_length)
+            all_capacities = []
+            for cap_battery in self.batteries:
+                all_capacities.append(float(cap_battery.get_capacity()))
+            print(all_capacities)
+            print(total_length)
 
         return total_length
 

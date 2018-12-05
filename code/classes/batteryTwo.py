@@ -11,10 +11,10 @@ class Battery(object):
         distances = []
         x = battery.get_xval()
         y = battery.get_yval()
-        i = 0
 
         # calculating distances from battery to all houses
         for house in connecting_houses:
+
             # only calculate distance if house is not yet connected
             if (house.get_batteryId() == 10):
                 x_value = house.get_xval()
