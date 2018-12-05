@@ -8,6 +8,7 @@ from random import shuffle
 import itertools
 from itertools import zip_longest
 import csv
+from datetime import datetime
 
 """
 initialising variables, filling when better smartgrid is found
@@ -102,56 +103,42 @@ class SmartGrid():
                 # add distance to total_length
                 total_length += index_battery[1]
 
-        # not first shufle
-        elif count > 0 and count < 5:
-            shuffle(optimalorder)
-            total_length = 0
-            for house in optimalorder:
-                # calculate length to closest battery
-                all_distances = house.calculate_all(house, self.batteries)
+        # # not first shufle
+        # else:
+        #     shuffle(optimalorder)
+        #     total_length = 0
+        #     for house in optimalorder:
+        #         # calculate length to closest battery
+        #         all_distances = house.calculate_all(house, self.batteries)
+        #
+        #         # calculate length to closest battery
+        #         min_distance = house.calculate_min(all_distances[0])
+        #
+        #         # adjusting battery capacity and checking for overload
+        #         index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+        #
+        #         # add the batterynumber to houseobject
+        #         house.set_batteryId(index_battery[0])
+        #         total_length += index_battery[1]
 
-                # calculate length to closest battery
-                min_distance = house.calculate_min(all_distances[0])
+        # # first shuffle has optimal order and length
+        # if count == 0:
+        #     optimalorder = self.houses
+        #     optimallength = total_length
+        #
+        # # if last configuration length was worse, change optimals
+        # else:
+        #     if optimallength > total_length:
+        #         optimallength = total_length
+        #         optimalorder = self.houses
 
-                # adjusting battery capacity and checking for overload
-                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+        # writing total_length value to csv
+        with open('resultaten/testresults.csv', mode='a') as results_file:
+            results_writer = csv.writer(results_file)
+            export_data = [total_length]
+            results_writer.writerow(export_data)
 
-                # add the batterynumber to houseobject
-                house.set_batteryId(index_battery[0])
-                total_length += index_battery[1]
-
-        # swap the optimal listorder found after shuffling
-        elif count > 5:
-
-            a = [1, 2, 3]
-
-            counti = 5
-
-            # iterate over different listorders, get best
-            for i in itertools.permutations(a):
-                print(i)
-
-
-
-
-        # first shuffle has optimal order and length
-        if count == 0:
-            optimalorder = self.houses
-            lengths.append(total_length)
-
-        elif count > 0 and count < 5:
-
-            lengths.append(total_length)
-
-            # if last configurationlength was worse, change optimals
-            if optimallength > total_length:
-                optimallength = total_length
-                optimalorder = self.houses
-                print(optimallength)
-
-        print(count)
-        count += 1
-
+        # count = 1
         return total_length
 
     # method that visualizes the grids
@@ -242,12 +229,16 @@ class SmartGrid():
         plt.show()
 
 if __name__ == "__main__":
+    start_time = datetime.now()
 
-    for i in range(7):
+    for i in range(10):
         smartgrid = SmartGrid()
 
+    end_time = datetime.now()
+    print('Duration: {}'.format(end_time - start_time))
+
     #writing to the csv file
-    with open('resultaten/testresults.csv', mode='w') as results_file:
-         results_writer = csv.writer(results_file)
-         export_data = zip_longest(*[lengths], fillvalue = '')
-         results_writer.writerows(export_data)
+    # with open('resultaten/testresults.csv', mode='w') as results_file:
+    #      results_writer = csv.writer(results_file)
+    #      export_data = zip_longest(*[lengths], fillvalue = '')
+    #      results_writer.writerows(export_data)
