@@ -27,7 +27,7 @@ class House(object):
     def get_batteryId(self):
         return self.batteryId
 
-    #
+    # set the batteryId connected to the house
     def set_batteryId(self, index):
         self.batteryId = index
         return self.batteryId

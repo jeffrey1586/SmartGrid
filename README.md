@@ -16,19 +16,41 @@ waarbij n het aantal huizen in de smartgrid is. Deze functie kan voor a en b als
 
 Dit uitfilteren werkt echter alleen bij algoritmes die deze configuraties ook daadwerkelijk links laten liggen.
 
-**De scorefunctie** voor fase a) en b) kan zo gedefinieerd worden: 
+**De scorefunctie** voor fase a) en b) kan zo gedefinieerd worden:
 
     kabellengte * 9 + 25 000
 
-In deze is de kabellengte het aantal grids dat alle kabels beslaan. Per gridsegment kost een kabel €9 In de wijken voor a en b zijn altijd 5 batterijen aanwezig, die per stuk €5000 kosten: 5 * €5000 = €25 000. 
+In deze is de kabellengte het aantal grids dat alle kabels beslaan. Per gridsegment kost een kabel €9. In de wijken voor a en b zijn altijd 5 batterijen aanwezig, die per stuk €5000 kosten: 5 * €5000 = €25 000. 
 
 De upperbound van deze scorefunctie, ofwel de hoogst mogelijke kosten die een configuratie zou kunnen halen (en daarmee de slechtste score), is in de onderstaande formule weergegeven. Hierbij is x de kabellengte tussen het huis en de batterij in een wijk die het verst van elkaar af liggen. n is het aantal huizen in de wijk.
 
-    (n * x) * 9 + 25 000 
+    (n * x) * 9 + 25 000
 
-De lowerbound, ofwel de laagst mogelijke kosten die een configuratie zou kunnen halen (en dus de beste score), is in onderstaande formule weergegeven. De kortste afstand die een huis af zou kunnen leggen is 1; n is het aantal huizen in de wijk. 
+De lowerbound, ofwel de laagst mogelijke kosten die een configuratie zou kunnen halen (en dus de beste score), is in onderstaande formule weergegeven. De kortste afstand die een huis af zou kunnen leggen is 1; n is het aantal huizen in de wijk.
 
-    (n * 1) * 9 + 25 000 
+    (n * 1) * 9 + 25 000
+
+## Algoritmes
+**Greedy algorithm**
+In onze code passen we een greedy algorithm toe om een Smartgrid te configureren. Eerst laden we in de method ´load_batteries’ alle batterijen in, waarin elke batterij een object wordt die een x-, y- en capaciteitswaarde toegekend krijgt (zie het bestand battery.py in code/classes). Dit doen we ook voor de huizen in de method ‘load_houses’: deze krijgen echter in plaats van een capaciteit een output.
+
+Dan vindt het verbinden van huizen met batterijen plaats in de method ‘connecting’. Voor elk huis wordt:
+de afstand naar elke batterij berekend;
+de kleinste afstand uitgekozen (kenmerkend voor een greedy algorithm);
+de bij de kleinste afstand horende batterij aan het huis verbonden, tenzij de capaciteit overschreden wordt: het huis krijgt dan de batterij die daarna het dichtstbijzijnd is (en capaciteit over heeft).
+
+Dit algoritme levert een configuratie met een totale kabellengte van 3876 op en is bovenaan de README gevisualiseerd.
+
+**Shuffle methode**
+Eveneens kan er in deze code gekozen worden voor een algoritme dat bovenstaande configuratie ‘shufflelt’. Dat wil zeggen, de volgorde waarin de huizen elk op zoek gaan naar batterijen, wordt willekeurig aangepast. Het kan namelijk zo zijn dat er een huis verbonden wordt aan een batterij die ver weg staat, terwijl er voor dit huis een andere batterij veel dichter in de buurt staat. Aan deze laatste batterij wordt dit huis echter dan niet verbonden, omdat de capaciteit al vol zou kunnen zitten.
+
+De verbindingsvolgorde is dus relevant. Het shufflen (zie functie ‘Shuffle’) verandert op willekeurige wijze deze volgorde. De methode is roekeloos, maar levert wel verbetering ten opzichte van niet-shufflen.
+
+**Hillclimber algorithm**
+In deze code is een hillclimber algorithm geschreven om te testen of een simpele swap functie verbetering oplevert.
+
+De swap houdt hier in dat de batterijen van twee huizen verwisseld worden (mits het verschillende batterijen zijn), waarna gekeken wordt of de totale lengte verkleind is. Als dat het geval is, dan wordt de capaciteit van de batterijen gecontroleerd: als deze niet overschreden is, wordt de swap definitief toegepast en behouden. De hillclimber begint dan met de volgende swap.
+
 
 ## Aan de slag (Getting Started)
 

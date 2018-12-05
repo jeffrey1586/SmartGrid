@@ -3,7 +3,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
 from code.classes.house import House
-from code.battery import Battery
+from code.classes.battery import Battery
 from random import shuffle
 import itertools
 from itertools import zip_longest
@@ -80,65 +80,44 @@ class SmartGrid():
         global optimallength
         global total_length
 
-        # first shuffle
+        # change order of array list_houses
+        shuffle(self.houses)
+        for house in self.houses:
+
+            # calculate length to closest battery
+            all_distances = house.calculate_all(house, self.batteries)
+
+            # calculate length to closest battery
+            min_distance = house.calculate_min(all_distances[0])
+
+            # adjusting battery capacity and checking for overload
+            index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+
+            # add the batterynumber to houseobject
+            house.set_batteryId(index_battery[0])
+
+        # calculate total length
+        total_length = house.total(self.houses, self.batteries)
+
+        # saving initial list order and optimal length
         if count == 0:
+            optimal = self.houses
+            optimallength = total_length
+            count = 1
 
-            # change order of array list_houses
-            shuffle(self.houses)
-            total_length = 0
-            for house in self.houses:
+        # saving the better list order and optimal length
+        else:
+            if optimallength > total_length:
+                optimallength = total_length
+                optimal = self.houses
+                print(optimallength)
 
-                # calculate length to closest battery
-                all_distances = house.calculate_all(house, self.batteries)
-
-                # calculate length to closest battery
-                min_distance = house.calculate_min(all_distances[0])
-
-                # adjusting battery capacity and checking for overload
-                index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-
-                # add the batterynumber to houseobject
-                house.set_batteryId(index_battery[0])
-
-                # add distance to total_length
-                total_length += index_battery[1]
-
-        # # not first shufle
-        # else:
-        #     shuffle(optimalorder)
-        #     total_length = 0
-        #     for house in optimalorder:
-        #         # calculate length to closest battery
-        #         all_distances = house.calculate_all(house, self.batteries)
-        #
-        #         # calculate length to closest battery
-        #         min_distance = house.calculate_min(all_distances[0])
-        #
-        #         # adjusting battery capacity and checking for overload
-        #         index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
-        #
-        #         # add the batterynumber to houseobject
-        #         house.set_batteryId(index_battery[0])
-        #         total_length += index_battery[1]
-
-        # # first shuffle has optimal order and length
-        # if count == 0:
-        #     optimalorder = self.houses
-        #     optimallength = total_length
-        #
-        # # if last configuration length was worse, change optimals
-        # else:
-        #     if optimallength > total_length:
-        #         optimallength = total_length
-        #         optimalorder = self.houses
-
-        # writing total_length value to csv
+        #writing total_length value to csv
         with open('resultaten/testresults.csv', mode='a') as results_file:
             results_writer = csv.writer(results_file)
             export_data = [total_length]
             results_writer.writerow(export_data)
 
-        # count = 1
         return total_length
 
     # method that visualizes the grids
@@ -236,9 +215,3 @@ if __name__ == "__main__":
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
-
-    #writing to the csv file
-    # with open('resultaten/testresults.csv', mode='w') as results_file:
-    #      results_writer = csv.writer(results_file)
-    #      export_data = zip_longest(*[lengths], fillvalue = '')
-    #      results_writer.writerows(export_data)

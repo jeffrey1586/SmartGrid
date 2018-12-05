@@ -75,7 +75,7 @@ class SmartGrid():
         if count == 0:
 
             # change order of array list_houses
-            #shuffle(self.houses)
+            # shuffle(self.houses)
             connecting_houses = self.houses
             total_length = 0
             battery_nmr = 0

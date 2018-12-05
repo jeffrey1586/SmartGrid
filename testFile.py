@@ -94,11 +94,11 @@ class SmartGrid():
 
                 total_length += index_battery[1]
 
-
+        # not first shufle
         else:
-            # shuffle(optimal)
+            shuffle(optimalorder)
             total_length = 0
-            for house in optimal:
+            for house in optimalorder:
                 # calculate length to closest battery
                 all_distances = house.calculate_all(house, self.batteries)
 
@@ -111,6 +111,23 @@ class SmartGrid():
                 # add the batterynumber to houseobject
                 house.set_batteryId(index_battery[0])
                 total_length += index_battery[1]
+
+        # first shuffle has optimal order and length
+        if count == 0:
+            optimalorder = self.houses
+            optimallength = total_length
+
+        # if last configuration length was worse, change optimals
+        else:
+            if optimallength > total_length:
+                optimallength = total_length
+                optimalorder = self.houses
+
+        # writing total_length value to csv
+        with open('resultaten/testresults.csv', mode='a') as results_file:
+            results_writer = csv.writer(results_file)
+            export_data = [total_length]
+            results_writer.writerow(export_data)
 
 
         if count == 0:
