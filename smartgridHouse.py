@@ -113,10 +113,10 @@ class SmartGrid():
                 print(optimallength)
 
         # writing total_length value to csv
-        # with open('resultaten/testresults.csv', mode='a') as results_file:
-        #     results_writer = csv.writer(results_file)
-        #     export_data = [total_length]
-        #     results_writer.writerow(export_data)
+        with open('resultaten/testresults.csv', mode='a') as results_file:
+            results_writer = csv.writer(results_file)
+            export_data = [total_length]
+            results_writer.writerow(export_data)
 
         return total_length
 
