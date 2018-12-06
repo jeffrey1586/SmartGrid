@@ -20,7 +20,7 @@ Dit uitfilteren werkt echter alleen bij algoritmes die deze configuraties ook da
 
     kabellengte * 9 + 25 000
 
-In deze is de kabellengte het aantal grids dat alle kabels beslaan. Per gridsegment kost een kabel €9. In de wijken voor a en b zijn altijd 5 batterijen aanwezig, die per stuk €5000 kosten: 5 * €5000 = €25 000. 
+In deze is de kabellengte het aantal grids dat alle kabels beslaan. Per gridsegment kost een kabel €9. In de wijken voor a en b zijn altijd 5 batterijen aanwezig, die per stuk €5000 kosten: 5 * €5000 = €25 000.
 
 De upperbound van deze scorefunctie, ofwel de hoogst mogelijke kosten die een configuratie zou kunnen halen (en daarmee de slechtste score), is in de onderstaande formule weergegeven. Hierbij is x de kabellengte tussen het huis en de batterij in een wijk die het verst van elkaar af liggen. n is het aantal huizen in de wijk.
 
@@ -31,7 +31,7 @@ De lowerbound, ofwel de laagst mogelijke kosten die een configuratie zou kunnen 
     (n * 1) * 9 + 25 000
 
 ## Algoritmes
-**Greedy algorithm**
+**Greedy algoritme**
 In onze code passen we een greedy algorithm toe om een Smartgrid te configureren. Eerst laden we in de method ´load_batteries’ alle batterijen in, waarin elke batterij een object wordt die een x-, y- en capaciteitswaarde toegekend krijgt (zie het bestand battery.py in code/classes). Dit doen we ook voor de huizen in de method ‘load_houses’: deze krijgen echter in plaats van een capaciteit een output.
 
 Dan vindt het verbinden van huizen met batterijen plaats in de method ‘connecting’. Voor elk huis wordt:
@@ -46,10 +46,16 @@ Eveneens kan er in deze code gekozen worden voor een algoritme dat bovenstaande 
 
 De verbindingsvolgorde is dus relevant. Het shufflen (zie functie ‘Shuffle’) verandert op willekeurige wijze deze volgorde. De methode is roekeloos, maar levert wel verbetering ten opzichte van niet-shufflen.
 
-**Hillclimber algorithm**
-In deze code is een hillclimber algorithm geschreven om te testen of een simpele swap functie verbetering oplevert.
+**Hillclimber algoritmes**
+In deze code is onder andere een hillclimber algorithm geschreven om te testen of een simpele swap functie verbetering oplevert.
 
 De swap houdt hier in dat de batterijen van twee huizen verwisseld worden (mits het verschillende batterijen zijn), waarna gekeken wordt of de totale lengte verkleind is. Als dat het geval is, dan wordt de capaciteit van de batterijen gecontroleerd: als deze niet overschreden is, wordt de swap definitief toegepast en behouden. De hillclimber begint dan met de volgende swap.
+
+De verbetering die dit algoritme in de scorefunctie oplevert is minimaal. RESULTATEN TOEVOEGEN!
+
+Een tweede hillcimber die is geïmplementeerd is de stochastic hillcimber. Deze neemt twee willekeurige huizen, verwisselt de batterijen en kijkt of er een kortere kabellengte ontstaat. Als dat het geval is, wordt de swap behouden en begint het algoritme opnieuw. De batterijen worden uiteraard niet overladen: eveneens vindt er geen batterijwissel plaats tussen twee huizen die dezelfde batterij gebruiken.
+
+Ten slotte is er een derde hillcimber, de steepest ascend. Deze pakt het eerste huis uit de lijst met huisobjecten en genereert vervolgens elke mogelijke swap voor dit huis. De beste swap wordt toegepast, waarna het algoritme opnieuw start met het volgende huis uit de lijst.
 
 
 ## Aan de slag (Getting Started)
