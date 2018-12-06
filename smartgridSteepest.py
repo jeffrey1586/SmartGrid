@@ -136,9 +136,9 @@ class SmartGrid():
                         newtotal = house.total(self.houses, self.batteries)
 
                         # check for better result and append to list
-                        if (besttotal > newtotal or besttotal == newtotal):
+                        if (besttotal > newtotal):
                             print("old: ", besttotal)
-                            besttotal = newtotal
+                            # besttotal = newtotal
                             print("new: ", newtotal)
                             swap_distances[house_sec] = newtotal
 
