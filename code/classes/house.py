@@ -62,7 +62,7 @@ class House(object):
                 new_capacity = batteries[battery_index].set_capacity(output)
         return (battery_index, shortest_length)
 
-    # calculate tot length of grid
+    # calculate total length of grid
     def total(self, list_houses, list_batteries):
 
         total = 0
@@ -75,6 +75,23 @@ class House(object):
             tot = x_diff + y_diff
             total += tot
         return total
+
+    # calculate length of two cables
+    def local_length(self, house_first, house_sec, list_batteries):
+         index_first = house_first.get_batteryId()
+         index_sec = house_sec.get_batteryId()
+         battery_first = list_batteries[index_first]
+         battery_sec = list_batteries[index_sec]
+
+         x_first = abs(int(house_first.get_xval()) - int(battery_first.get_xval()))
+         y_first = abs(int(house_first.get_yval()) - int(battery_first.get_yval()))
+         x_sec = abs(int(house_sec.get_xval()) - int(battery_sec.get_xval()))
+         y_sec = abs(int(house_sec.get_yval()) - int(battery_sec.get_yval()))
+
+         tot_first = x_first + y_first
+         tot_sec = x_sec + y_sec
+         total = tot_first + tot_sec
+         return total
 
     # get method that returns the x coordinate from the house
     def get_xval(self):

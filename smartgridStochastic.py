@@ -9,6 +9,8 @@ import itertools
 from itertools import zip_longest
 import csv
 from datetime import datetime
+import random
+import math
 
 """
 initialising variables, filling when better smartgrid is found
@@ -17,7 +19,7 @@ optimalorder for best sequence in list_houses, optimallength for best cabledista
 optimalorder= []
 optimallength = 0
 lengths = []
-total_length = 0
+total = 0
 
 # initialising counter for comparing
 count = 0
@@ -28,7 +30,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        #self.visualize = self.visualize_grid()
+        # self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -78,11 +80,11 @@ class SmartGrid():
         global count
         global optimalorder
         global optimallength
-        global total_length
+        global total
 
         # change order of array list_houses
-        shuffle(self.houses)
-        total_length = 0
+        # shuffle(self.houses)
+
         for house in self.houses:
 
             # calculate length to closest battery
@@ -97,20 +99,22 @@ class SmartGrid():
             # add the batterynumber to houseobject
             house.set_batteryId(index_battery[0])
 
-            # add distance to total_length
-            total_length += index_battery[1]
+            # # add distance to total_length
+            # total_length += index_battery[1]
 
-        # hill climber implementation
+        # Stochastic hill climber implementation
         house = self.houses[0]
-        besttotal = house.total(self.houses, self.batteries)
-        for i in range(149):
-
-            house_first = self.houses[i]
-            house_sec = self.houses[i + 1]
+        for i in range(100000):
+            j = random.randint(0,149)
+            k = random.randint(0,149)
+            house_first = self.houses[j]
+            house_sec = self.houses[k]
             index_first = int(house_first.get_batteryId())
             index_sec = int(house_sec.get_batteryId())
             battery_first = self.batteries[index_first]
             battery_sec = self.batteries[index_sec]
+
+            old_total = house.local_length(house_first, house_sec, self.batteries)
 
             # check if houses are connected to same battery
             if (index_first != index_sec):
@@ -130,14 +134,10 @@ class SmartGrid():
                 else:
                     house_first.set_batteryId(int(index_sec))
                     house_sec.set_batteryId(int(index_first))
-                    newtotal = house.total(self.houses, self.batteries)
+                    new_total = house.local_length(house_first, house_sec, self.batteries)
 
                     # check for better result
-                    if (besttotal > newtotal):
-                        print("old: ", besttotal)
-                        besttotal = newtotal
-                        print("new: ", besttotal)
-                    else:
+                    if (old_total < new_total):
                         house_first.set_batteryId(int(index_first))
                         house_sec.set_batteryId(int(index_sec))
                         battery_first.set_capacity(-1 * float(house_sec.get_output()))
@@ -145,7 +145,9 @@ class SmartGrid():
                         battery_first.set_capacity(house_first.get_output())
                         battery_sec.set_capacity(house_sec.get_output())
 
-        return total_length
+        total = house.total(self.houses, self.batteries)
+        # print(total)
+        return total
 
     # method that visualizes the grids
     def visualize_grid(self):
@@ -211,7 +213,7 @@ class SmartGrid():
 
         # appending cables lines to lineCollection
         cables = []
-        for i in range(149):
+        for i in range(150):
             house = self.houses[i]
             index = house.get_batteryId()
             battery_nmr = Batteries[index]
@@ -237,8 +239,34 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(1):
+    for i in range(10):
         smartgrid = SmartGrid()
+        lengths.append(total)
+        print(total)
+
+        # writing total_length value to csv
+        with open('resultaten/testresults.csv', mode='a') as results_file:
+            results_writer = csv.writer(results_file)
+            export_data = [total]
+            results_writer.writerow(export_data)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
+
+    # standard deviation and mean
+    print("sd: ", np.std(lengths))
+    print("mean: ", np.mean(lengths))
+
+    # make histogram
+    unique_lengths = set(lengths)
+    count_unique = len(unique_lengths)
+
+    bins = np.linspace(math.ceil(min(lengths)), math.floor(max(lengths)), count_unique)
+    plt.xlim([min(lengths), max(lengths)])
+
+    plt.hist(lengths, bins=bins, alpha=1)
+    plt.title("Stochastic Hill climber(itteration: 3000)")
+    plt.xlabel('Score')
+    plt.ylabel('Count')
+
+    plt.show()

@@ -9,6 +9,7 @@ import itertools
 from itertools import zip_longest
 import csv
 from datetime import datetime
+import random
 
 """
 initialising variables, filling when better smartgrid is found
@@ -28,7 +29,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        #self.visualize = self.visualize_grid()
+        self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -81,7 +82,7 @@ class SmartGrid():
         global total_length
 
         # change order of array list_houses
-        shuffle(self.houses)
+        # shuffle(self.houses)
         total_length = 0
         for house in self.houses:
 
@@ -100,50 +101,73 @@ class SmartGrid():
             # add distance to total_length
             total_length += index_battery[1]
 
-        # hill climber implementation
+        # Stochastic hill climber implementation
         house = self.houses[0]
         besttotal = house.total(self.houses, self.batteries)
-        for i in range(149):
-
-            house_first = self.houses[i]
-            house_sec = self.houses[i + 1]
+        for i in range(10000):
+            j = random.randint(0,149)
+            house_first = self.houses[j]
             index_first = int(house_first.get_batteryId())
-            index_sec = int(house_sec.get_batteryId())
             battery_first = self.batteries[index_first]
-            battery_sec = self.batteries[index_sec]
+            swap_distances = {}
 
-            # check if houses are connected to same battery
-            if (index_first != index_sec):
-                battery_first.set_capacity(-1 * float(house_first.get_output()))
-                battery_sec.set_capacity(-1 * float(house_sec.get_output()))
-                cap_one = battery_first.set_capacity(house_sec.get_output())
-                cap_two = battery_sec.set_capacity(house_first.get_output())
+            for house_sec in self.houses:
+                index_sec = int(house_sec.get_batteryId())
+                battery_sec = self.batteries[index_sec]
 
-                # checking if capacities are exceeded
-                if (cap_one < 0 or cap_two < 0):
-                    battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                    battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                    battery_first.set_capacity(house_first.get_output())
-                    battery_sec.set_capacity(house_sec.get_output())
+                # check if houses are connected to same battery
+                if (index_first != index_sec):
+                    battery_first.set_capacity(-1 * float(house_first.get_output()))
+                    battery_sec.set_capacity(-1 * float(house_sec.get_output()))
+                    cap_one = battery_first.set_capacity(house_sec.get_output())
+                    cap_two = battery_sec.set_capacity(house_first.get_output())
 
-                # swap connections
-                else:
-                    house_first.set_batteryId(int(index_sec))
-                    house_sec.set_batteryId(int(index_first))
-                    newtotal = house.total(self.houses, self.batteries)
+                    # checking if capacities are exceeded
+                    if (cap_one < 0 or cap_two < 0):
+                        battery_first.set_capacity(-1 * float(house_sec.get_output()))
+                        battery_sec.set_capacity(-1 * float(house_first.get_output()))
+                        battery_first.set_capacity(house_first.get_output())
+                        battery_sec.set_capacity(house_sec.get_output())
 
-                    # check for better result
-                    if (besttotal > newtotal):
-                        print("old: ", besttotal)
-                        besttotal = newtotal
-                        print("new: ", besttotal)
+                    # swap connections
                     else:
+                        house_first.set_batteryId(int(index_sec))
+                        house_sec.set_batteryId(int(index_first))
+                        newtotal = house.total(self.houses, self.batteries)
+
+                        # check for better result and append to list
+                        if (besttotal > newtotal):
+                            print("old: ", besttotal)
+                            # besttotal = newtotal
+                            print("new: ", newtotal)
+                            swap_distances[house_sec] = newtotal
+
                         house_first.set_batteryId(int(index_first))
                         house_sec.set_batteryId(int(index_sec))
                         battery_first.set_capacity(-1 * float(house_sec.get_output()))
                         battery_sec.set_capacity(-1 * float(house_first.get_output()))
                         battery_first.set_capacity(house_first.get_output())
                         battery_sec.set_capacity(house_sec.get_output())
+
+            # get best swap option
+            if swap_distances != {}:
+                house_sec = min(swap_distances, key=swap_distances.get)
+                index_sec = int(house_sec.get_batteryId())
+                battery_sec = self.batteries[index_sec]
+
+                house_first.set_batteryId(int(index_sec))
+                house_sec.set_batteryId(int(index_first))
+                battery_first.set_capacity(house_sec.get_output())
+                battery_sec.set_capacity(house_first.get_output())
+
+                print(house.total(self.houses, self.batteries))
+
+
+        # writing total_length value to csv
+        # with open('resultaten/testresults.csv', mode='a') as results_file:
+        #     results_writer = csv.writer(results_file)
+        #     export_data = [total_length]
+        #     results_writer.writerow(export_data)
 
         return total_length
 
@@ -211,7 +235,7 @@ class SmartGrid():
 
         # appending cables lines to lineCollection
         cables = []
-        for i in range(149):
+        for i in range(150):
             house = self.houses[i]
             index = house.get_batteryId()
             battery_nmr = Batteries[index]
