@@ -109,7 +109,6 @@ class SmartGrid():
 
                 battery_nmr += 1
 
-            print(new_house.get_batteryId(), new_house.get_output())
             all_id = []
             for house in self.houses:
                 all_id.append(house.get_batteryId())
