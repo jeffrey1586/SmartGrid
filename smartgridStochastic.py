@@ -83,7 +83,7 @@ class SmartGrid():
         global total
 
         # change order of array list_houses
-        # shuffle(self.houses)
+        shuffle(self.houses)
 
         for house in self.houses:
 
@@ -104,7 +104,7 @@ class SmartGrid():
 
         # Stochastic hill climber implementation
         house = self.houses[0]
-        for i in range(100000):
+        for i in range(1000):
             j = random.randint(0,149)
             k = random.randint(0,149)
             house_first = self.houses[j]
@@ -239,34 +239,35 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(10):
+    for i in range(10000):
         smartgrid = SmartGrid()
         lengths.append(total)
         print(total)
 
-        # writing total_length value to csv
-        with open('resultaten/testresults.csv', mode='a') as results_file:
-            results_writer = csv.writer(results_file)
-            export_data = [total]
-            results_writer.writerow(export_data)
+        # # writing total_length value to csv
+        # with open('resultaten/testresults.csv', mode='a') as results_file:
+        #     results_writer = csv.writer(results_file)
+        #     export_data = [total]
+        #     results_writer.writerow(export_data)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
 
     # standard deviation and mean
+    print("best: ", min(lengths))
     print("sd: ", np.std(lengths))
     print("mean: ", np.mean(lengths))
 
-    # make histogram
-    unique_lengths = set(lengths)
-    count_unique = len(unique_lengths)
-
-    bins = np.linspace(math.ceil(min(lengths)), math.floor(max(lengths)), count_unique)
-    plt.xlim([min(lengths), max(lengths)])
-
-    plt.hist(lengths, bins=bins, alpha=1)
-    plt.title("Stochastic Hill climber(itteration: 3000)")
-    plt.xlabel('Score')
-    plt.ylabel('Count')
+    # # make histogram
+    # unique_lengths = set(lengths)
+    # count_unique = len(unique_lengths)
+    #
+    # bins = np.linspace(math.ceil(min(lengths)), math.floor(max(lengths)), count_unique)
+    # plt.xlim([min(lengths), max(lengths)])
+    #
+    # plt.hist(lengths, bins=bins, alpha=1)
+    # plt.title("Stochastic Hill climber(itteration: 3000)")
+    # plt.xlabel('Score')
+    # plt.ylabel('Count')
 
     plt.show()

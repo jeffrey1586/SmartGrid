@@ -237,8 +237,13 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(1):
+    for i in range(10000):
         smartgrid = SmartGrid()
+        lengths.append(total_length)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
+
+    print("best: ", min(lengths))
+    print("sd: ", np.std(lengths))
+    print("mean: ", np.mean(lengths))

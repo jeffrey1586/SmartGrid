@@ -30,7 +30,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        #self.visualize = self.visualize_grid()
+        self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -83,7 +83,7 @@ class SmartGrid():
         global total_length
 
         # change order of array list_houses
-        shuffle(self.houses)
+        #shuffle(self.houses)
         for house in self.houses:
 
             # calculate length to closest battery
@@ -151,7 +151,7 @@ class SmartGrid():
                 bHouses.append((x_house, y_house))
                 xHouse = list(map(lambda x: x[0], bHouses))
                 yHouse = list(map(lambda x: x[1], bHouses))
-                ax.plot(xHouse, yHouse, '*', color='lightgreen')
+                ax.plot(xHouse, yHouse, '*', color='red')
 
             elif batt == 2:
                 cHouses.append((x_house, y_house))
@@ -179,10 +179,52 @@ class SmartGrid():
             y_battery = int(battery_nmr.get_yval())
             Batteries.append((x_battery, y_battery))
 
-        # adding the batteries to the plot
-        xBat = list(map(lambda x: x[0], Batteries))
-        yBat = list(map(lambda x: x[1], Batteries))
-        ax.plot(xBat, yBat, 's', color='red')
+        # coloring batteries
+        battcount = 0
+        aBatteries = []
+        bBatteries = []
+        cBatteries = []
+        dBatteries = []
+        eBatteries = []
+
+        for battery in Batteries:
+
+            if battcount == 0:
+                aBatteries.append(battery)
+                # adding the batteries to the plot
+                xBat = list(map(lambda x: x[0], aBatteries))
+                yBat = list(map(lambda x: x[1], aBatteries))
+                ax.plot(xBat, yBat, 's', color='blue', markersize=10)
+
+            elif battcount == 1:
+                bBatteries.append(battery)
+                # adding the batteries to the plot
+                xBat = list(map(lambda x: x[0], bBatteries))
+                yBat = list(map(lambda x: x[1], bBatteries))
+                ax.plot(xBat, yBat, 's', color='red', markersize=10)
+
+            if battcount == 2:
+                cBatteries.append(battery)
+                # adding the batteries to the plot
+                xBat = list(map(lambda x: x[0], cBatteries))
+                yBat = list(map(lambda x: x[1], cBatteries))
+                ax.plot(xBat, yBat, 's', color='purple', markersize=10)
+
+            if battcount == 3:
+                dBatteries.append(battery)
+                # adding the batteries to the plot
+                xBat = list(map(lambda x: x[0], dBatteries))
+                yBat = list(map(lambda x: x[1], dBatteries))
+                ax.plot(xBat, yBat, 's', color='orange', markersize=10)
+
+            if battcount == 4:
+                eBatteries.append(battery)
+                # adding the batteries to the plot
+                xBat = list(map(lambda x: x[0], eBatteries))
+                yBat = list(map(lambda x: x[1], eBatteries))
+                ax.plot(xBat, yBat, 's', color='black', markersize=10)
+
+            battcount += 1
 
         # appending cables lines to lineCollection
         cables = []
@@ -207,14 +249,23 @@ class SmartGrid():
         # establish gridlines and show plot
         plt.xticks(np.arange(0, 51, 1))
         plt.yticks(np.arange(0, 51, 1))
+        plt.title("Greedy algorithm, kabellengte: 3876")
         plt.show()
 
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(1000000):
+    for i in range(10000):
         smartgrid = SmartGrid()
         lengths.append(total_length)
+
+    end_time = datetime.now()
+    print('Duration: {}'.format(end_time - start_time))
+
+    # standard deviation and mean
+    print("best: ", min(lengths))
+    print("sd: ", np.std(lengths))
+    print("mean: ", np.mean(lengths))
 
     unique_lengths = set(lengths)
     #print(unique_lengths)
@@ -234,6 +285,3 @@ if __name__ == "__main__":
     plt.ylabel('Aantal per score')
 
     plt.show()
-
-    end_time = datetime.now()
-    print('Duration: {}'.format(end_time - start_time))
