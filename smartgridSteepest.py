@@ -19,6 +19,8 @@ optimalorder= []
 optimallength = 0
 lengths = []
 total_length = 0
+optimal = []
+besttotal = 0
 
 # initialising counter for comparing
 count = 0
@@ -29,8 +31,7 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        self.visualize = self.visualize_grid()
-
+        # self.visualize = self.visualize_grid()
 
     # load method for Batteries
     def load_batteries(self):
@@ -80,10 +81,12 @@ class SmartGrid():
         global optimalorder
         global optimallength
         global total_length
+        global optimal
+        global besttotal
 
         # change order of array list_houses
-        # shuffle(self.houses)
-        total_length = 0
+        shuffle(self.houses)
+        # total_length = 0
         for house in self.houses:
 
             # calculate length to closest battery
@@ -99,77 +102,85 @@ class SmartGrid():
             house.set_batteryId(index_battery[0])
 
             # add distance to total_length
-            total_length += index_battery[1]
+            # total_length += index_battery[1]
 
-        # Stochastic hill climber implementation
-        house = self.houses[0]
-        besttotal = house.total(self.houses, self.batteries)
-        for i in range(10000):
-            j = random.randint(0,149)
-            house_first = self.houses[j]
-            index_first = int(house_first.get_batteryId())
-            battery_first = self.batteries[index_first]
-            swap_distances = {}
+        # # saving initial list order and optimal length
+        # if count == 0:
+        #     optimal = self.houses
+        #     optimallength = total_length
+        #     print(optimallength)
+        #
+        # # saving the better list order and optimal length
+        # elif count > 0 and count < 1000:
+        #     if optimallength < total_length:
+        #         optimallength = total_length
+        #         optimal = self.houses
+        #         print(optimallength)
+        # count += 1
 
-            for house_sec in self.houses:
-                index_sec = int(house_sec.get_batteryId())
-                battery_sec = self.batteries[index_sec]
+        if count == 0:
+            # Steepest-ascent hill climber implementation
+            optimal = self.houses
+            house = optimal[0]
+            besttotal = house.total(optimal, self.batteries)
+            for i in range(100):
+                j = random.randint(0,149)
+                house_first = optimal[j]
+                index_first = int(house_first.get_batteryId())
+                battery_first = self.batteries[index_first]
+                swap_distances = {}
 
-                # check if houses are connected to same battery
-                if (index_first != index_sec):
-                    battery_first.set_capacity(-1 * float(house_first.get_output()))
-                    battery_sec.set_capacity(-1 * float(house_sec.get_output()))
-                    cap_one = battery_first.set_capacity(house_sec.get_output())
-                    cap_two = battery_sec.set_capacity(house_first.get_output())
+                for house_sec in optimal:
+                    index_sec = int(house_sec.get_batteryId())
+                    battery_sec = self.batteries[index_sec]
 
-                    # checking if capacities are exceeded
-                    if (cap_one < 0 or cap_two < 0):
-                        battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                        battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                        battery_first.set_capacity(house_first.get_output())
-                        battery_sec.set_capacity(house_sec.get_output())
+                    # check if houses are connected to same battery
+                    if (index_first != index_sec):
+                        battery_first.set_capacity(-1 * float(house_first.get_output()))
+                        battery_sec.set_capacity(-1 * float(house_sec.get_output()))
+                        cap_one = battery_first.set_capacity(house_sec.get_output())
+                        cap_two = battery_sec.set_capacity(house_first.get_output())
 
-                    # swap connections
-                    else:
-                        house_first.set_batteryId(int(index_sec))
-                        house_sec.set_batteryId(int(index_first))
-                        newtotal = house.total(self.houses, self.batteries)
+                        # checking if capacities are exceeded
+                        if (cap_one < 0 or cap_two < 0):
+                            battery_first.set_capacity(-1 * float(house_sec.get_output()))
+                            battery_sec.set_capacity(-1 * float(house_first.get_output()))
+                            battery_first.set_capacity(house_first.get_output())
+                            battery_sec.set_capacity(house_sec.get_output())
 
-                        # check for better result and append to list
-                        if (besttotal > newtotal):
-                            print("old: ", besttotal)
-                            # besttotal = newtotal
-                            print("new: ", newtotal)
-                            swap_distances[house_sec] = newtotal
+                        # swap connections
+                        else:
+                            house_first.set_batteryId(int(index_sec))
+                            house_sec.set_batteryId(int(index_first))
+                            newtotal = house.total(optimal, self.batteries)
 
-                        house_first.set_batteryId(int(index_first))
-                        house_sec.set_batteryId(int(index_sec))
-                        battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                        battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                        battery_first.set_capacity(house_first.get_output())
-                        battery_sec.set_capacity(house_sec.get_output())
+                            # check for better result and append to list
+                            if (besttotal > newtotal):
+                                print("old: ", besttotal)
+                                besttotal = newtotal
+                                print("new: ", newtotal)
+                                swap_distances[house_sec] = besttotal
 
-            # get best swap option
-            if swap_distances != {}:
-                house_sec = min(swap_distances, key=swap_distances.get)
-                index_sec = int(house_sec.get_batteryId())
-                battery_sec = self.batteries[index_sec]
+                            house_first.set_batteryId(int(index_first))
+                            house_sec.set_batteryId(int(index_sec))
+                            battery_first.set_capacity(-1 * float(house_sec.get_output()))
+                            battery_sec.set_capacity(-1 * float(house_first.get_output()))
+                            battery_first.set_capacity(house_first.get_output())
+                            battery_sec.set_capacity(house_sec.get_output())
 
-                house_first.set_batteryId(int(index_sec))
-                house_sec.set_batteryId(int(index_first))
-                battery_first.set_capacity(house_sec.get_output())
-                battery_sec.set_capacity(house_first.get_output())
+                # get best swap option
+                if swap_distances != {}:
+                    house_sec = max(swap_distances, key=swap_distances.get)
+                    index_sec = int(house_sec.get_batteryId())
+                    battery_sec = self.batteries[index_sec]
 
-                print(house.total(self.houses, self.batteries))
+                    house_first.set_batteryId(int(index_sec))
+                    house_sec.set_batteryId(int(index_first))
+                    battery_first.set_capacity(house_sec.get_output())
+                    battery_sec.set_capacity(house_first.get_output())
+                    print("total: ", house.total(optimal, self.batteries))
 
-
-        # writing total_length value to csv
-        # with open('resultaten/testresults.csv', mode='a') as results_file:
-        #     results_writer = csv.writer(results_file)
-        #     export_data = [total_length]
-        #     results_writer.writerow(export_data)
-
-        return total_length
+        return besttotal
 
     # method that visualizes the grids
     def visualize_grid(self):
@@ -261,8 +272,15 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(1):
+    for i in range(10000):
         smartgrid = SmartGrid()
+        lengths.append(besttotal)
+        print(besttotal)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
+
+    # standard deviation and mean
+    print("best: ", min(lengths))
+    print("sd: ", np.std(lengths))
+    print("mean: ", np.mean(lengths))

@@ -120,4 +120,4 @@ class House(object):
 
     # methods that returns the values when printing house object
     def __str__(self):
-        return f"{self.xvalue}, {self.yvalue}, {self.output}, {self.batteryId}"
+        return f"{self.id}, {self.xvalue}, {self.yvalue}, {self.output}, {self.batteryId}"
