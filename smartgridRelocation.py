@@ -1,4 +1,4 @@
- import pandas as pd
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
@@ -20,6 +20,9 @@ optimalorder= []
 optimallength = 0
 lengths = []
 total_length = 0
+relocation_length = 0
+diax = 0
+diay = 0
 
 # initialising counter for comparing
 count = 0
@@ -35,6 +38,8 @@ class SmartGrid():
 
     # load method for Batteries
     def load_batteries(self):
+        global diax
+        global diay
 
         # reading the battery file
         batteryfile= open("data/wijk1_batterijen.txt", "r")
@@ -50,6 +55,12 @@ class SmartGrid():
                 capacity = check[2]
                 list_batteries.append(Battery(x_value, y_value, capacity))
             counter = 1
+        battery_change = list_batteries[0]
+
+        battery_change.set_xval(diay)
+        battery_change.set_yval(diax)
+        dia += 1
+
         return list_batteries
 
     # load method for Houses
@@ -83,7 +94,7 @@ class SmartGrid():
         global total_length
 
         # change order of array list_houses
-        #shuffle(self.houses)
+        # shuffle(self.houses)
         for house in self.houses:
 
             # calculate length to closest battery
@@ -151,7 +162,7 @@ class SmartGrid():
                 bHouses.append((x_house, y_house))
                 xHouse = list(map(lambda x: x[0], bHouses))
                 yHouse = list(map(lambda x: x[1], bHouses))
-                ax.plot(xHouse, yHouse, '*', color='red')
+                ax.plot(xHouse, yHouse, '*', color='lightgreen')
 
             elif batt == 2:
                 cHouses.append((x_house, y_house))
@@ -179,52 +190,10 @@ class SmartGrid():
             y_battery = int(battery_nmr.get_yval())
             Batteries.append((x_battery, y_battery))
 
-        # coloring batteries
-        battcount = 0
-        aBatteries = []
-        bBatteries = []
-        cBatteries = []
-        dBatteries = []
-        eBatteries = []
-
-        for battery in Batteries:
-
-            if battcount == 0:
-                aBatteries.append(battery)
-                # adding the batteries to the plot
-                xBat = list(map(lambda x: x[0], aBatteries))
-                yBat = list(map(lambda x: x[1], aBatteries))
-                ax.plot(xBat, yBat, 's', color='blue', markersize=10)
-
-            elif battcount == 1:
-                bBatteries.append(battery)
-                # adding the batteries to the plot
-                xBat = list(map(lambda x: x[0], bBatteries))
-                yBat = list(map(lambda x: x[1], bBatteries))
-                ax.plot(xBat, yBat, 's', color='red', markersize=10)
-
-            if battcount == 2:
-                cBatteries.append(battery)
-                # adding the batteries to the plot
-                xBat = list(map(lambda x: x[0], cBatteries))
-                yBat = list(map(lambda x: x[1], cBatteries))
-                ax.plot(xBat, yBat, 's', color='purple', markersize=10)
-
-            if battcount == 3:
-                dBatteries.append(battery)
-                # adding the batteries to the plot
-                xBat = list(map(lambda x: x[0], dBatteries))
-                yBat = list(map(lambda x: x[1], dBatteries))
-                ax.plot(xBat, yBat, 's', color='orange', markersize=10)
-
-            if battcount == 4:
-                eBatteries.append(battery)
-                # adding the batteries to the plot
-                xBat = list(map(lambda x: x[0], eBatteries))
-                yBat = list(map(lambda x: x[1], eBatteries))
-                ax.plot(xBat, yBat, 's', color='black', markersize=10)
-
-            battcount += 1
+        # adding the batteries to the plot
+        xBat = list(map(lambda x: x[0], Batteries))
+        yBat = list(map(lambda x: x[1], Batteries))
+        ax.plot(xBat, yBat, 's', color='red')
 
         # appending cables lines to lineCollection
         cables = []
@@ -249,39 +218,33 @@ class SmartGrid():
         # establish gridlines and show plot
         plt.xticks(np.arange(0, 51, 1))
         plt.yticks(np.arange(0, 51, 1))
-        plt.title("Greedy algorithm, kabellengte: 3876")
         plt.show()
 
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(10000):
+    for i in range(50):
         smartgrid = SmartGrid()
-        lengths.append(total_length)
+        # lengths.append(total_length)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
 
-    # standard deviation and mean
-    print("best: ", min(lengths))
-    print("sd: ", np.std(lengths))
-    print("mean: ", np.mean(lengths))
-
-    unique_lengths = set(lengths)
-    #print(unique_lengths)
-    count_unique = len(unique_lengths)
+    # unique_lengths = set(lengths)
+    # #print(unique_lengths)
+    # count_unique = len(unique_lengths)
     #print(count_unique)
 
-    bins = np.linspace(math.ceil(min(lengths)),
-                   math.floor(max(lengths)),
-                   count_unique)
-
-    plt.xlim([min(lengths), max(lengths)])
-
-
-    plt.hist(lengths, bins=bins, alpha=1)
-    plt.title('Shuffle algorithm (iteraties: 1 000 000)')
-    plt.xlabel('Score')
-    plt.ylabel('Aantal per score')
-
-    plt.show()
+    # bins = np.linspace(math.ceil(min(lengths)),
+    #                math.floor(max(lengths)),
+    #                count_unique)
+    #
+    # plt.xlim([min(lengths), max(lengths)])
+    #
+    #
+    # plt.hist(lengths, bins=bins, alpha=1)
+    # plt.title('Shuffle algorithm (iteraties: 1 000 000)')
+    # plt.xlabel('Score')
+    # plt.ylabel('Aantal per score')
+    #
+    # plt.show()
