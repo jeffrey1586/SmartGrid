@@ -31,6 +31,8 @@ De lowerbound, ofwel de laagst mogelijke kosten die een configuratie zou kunnen 
     (n * 1) * 9 + 25 000
 
 ## Algoritmes
+Alle resultaten van de algoritmes zijn terug te vinden in de README.md van het mapje resultaten.
+
 **Greedy algoritme**
 In onze code passen we een greedy algorithm toe om een Smartgrid te configureren. Eerst laden we in de method ´load_batteries’ alle batterijen in, waarin elke batterij een object wordt die een x-, y- en capaciteitswaarde toegekend krijgt (zie het bestand battery.py in code/classes). Dit doen we ook voor de huizen in de method ‘load_houses’: deze krijgen echter in plaats van een capaciteit een output.
 
