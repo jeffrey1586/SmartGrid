@@ -5,6 +5,8 @@ from matplotlib.collections import LineCollection
 from code.classes.houseTwo import House
 from code.classes.batteryTwo import Battery
 from random import shuffle
+from visualize import Visualize
+
 
 """
 initialising variables, filling when better smartgrid is found
@@ -126,51 +128,11 @@ class SmartGrid():
     # method that visualizes the grids
     def visualize_grid(self):
 
-        # reading the house file
-        housefile = pd.read_csv("data/wijk1_huizen.csv")
+        list_houses = self.houses
+        list_batteries = self.batteries
+        visualize_grid = Visualize(list_houses, list_batteries)
 
-        # setting the x and y coordinates from the houses in the plot
-        fig, ax = plt.subplots()
-        housefile.plot(kind = 'scatter', x = 'x', y = 'y', ax = ax, color='grey')
-
-        #load in battery coordinates
-        Batteries = []
-        for i in range(5):
-            battery_nmr = self.batteries[i]
-            x_battery = int(battery_nmr.get_xval())
-            y_battery = int(battery_nmr.get_yval())
-            Batteries.append((x_battery, y_battery))
-
-        # adding the batteries to the plot
-        xBat = list(map(lambda x: x[0], Batteries))
-        yBat = list(map(lambda x: x[1], Batteries))
-        ax.plot(xBat, yBat, 's', color='red')
-
-        # appending cables lines to lineCollection
-        cables = []
-        for i in range(149):
-            house = self.houses[i]
-            index = house.get_batteryId()
-
-            battery_nmr = Batteries[index]
-            x1 = house.get_xval()
-            y1 = house.get_yval()
-            x2 = battery_nmr[0]
-            y2 = battery_nmr[1]
-            cables.append(((x1, y1), (x1, y2)))
-            cables.append(((x1, y2), (x2, y2)))
-
-        # adding the entire collection to the grid
-        ln_coll = LineCollection(cables)
-        ax.add_collection(ln_coll)
-
-        # turn on the grid
-        ax.grid()
-
-        # establish gridlines and show plot
-        plt.xticks(np.arange(0, 51, 1))
-        plt.yticks(np.arange(0, 51, 1))
-        plt.show()
+        visualize_grid.visualize_all(list_houses, list_batteries)
 
 if __name__ == "__main__":
 

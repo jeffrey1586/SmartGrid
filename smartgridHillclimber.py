@@ -9,6 +9,8 @@ import itertools
 from itertools import zip_longest
 import csv
 from datetime import datetime
+from visualize import Visualize
+
 
 """
 initialising variables, filling when better smartgrid is found
@@ -142,89 +144,11 @@ class SmartGrid():
     # method that visualizes the grids
     def visualize_grid(self):
 
-        # setting up plots
-        fig, ax = plt.subplots()
+        list_houses = self.houses
+        list_batteries = self.batteries
+        visualize_grid = Visualize(list_houses, list_batteries)
 
-        # divide houses into lists, plot those with different colours
-        aHouses = []
-        bHouses = []
-        cHouses = []
-        dHouses = []
-        eHouses = []
-
-        for k in range(150):
-            house_nmr = self.houses[k]
-            x_house = int(house_nmr.get_xval())
-            y_house = int(house_nmr.get_yval())
-            batt = int(house_nmr.get_batteryId())
-
-            if batt == 0:
-                aHouses.append((x_house, y_house))
-                xHouse = list(map(lambda x: x[0], aHouses))
-                yHouse = list(map(lambda x: x[1], aHouses))
-                ax.plot(xHouse, yHouse, '*', color='blue')
-
-            elif batt == 1:
-                bHouses.append((x_house, y_house))
-                xHouse = list(map(lambda x: x[0], bHouses))
-                yHouse = list(map(lambda x: x[1], bHouses))
-                ax.plot(xHouse, yHouse, '*', color='lightgreen')
-
-            elif batt == 2:
-                cHouses.append((x_house, y_house))
-                xHouse = list(map(lambda x: x[0], cHouses))
-                yHouse = list(map(lambda x: x[1], cHouses))
-                ax.plot(xHouse, yHouse, '*', color='purple')
-
-            elif batt == 3:
-                dHouses.append((x_house, y_house))
-                xHouse = list(map(lambda x: x[0], dHouses))
-                yHouse = list(map(lambda x: x[1], dHouses))
-                ax.plot(xHouse, yHouse, '*', color='orange')
-
-            elif batt == 4:
-                eHouses.append((x_house, y_house))
-                xHouse = list(map(lambda x: x[0], eHouses))
-                yHouse = list(map(lambda x: x[1], eHouses))
-                ax.plot(xHouse, yHouse, '*', color='black')
-
-        #load in battery coordinates
-        Batteries = []
-        for i in range(5):
-            battery_nmr = self.batteries[i]
-            x_battery = int(battery_nmr.get_xval())
-            y_battery = int(battery_nmr.get_yval())
-            Batteries.append((x_battery, y_battery))
-
-        # adding the batteries to the plot
-        xBat = list(map(lambda x: x[0], Batteries))
-        yBat = list(map(lambda x: x[1], Batteries))
-        ax.plot(xBat, yBat, 's', color='red')
-
-        # appending cables lines to lineCollection
-        cables = []
-        for i in range(149):
-            house = self.houses[i]
-            index = house.get_batteryId()
-            battery_nmr = Batteries[index]
-            x1 = house.get_xval()
-            y1 = house.get_yval()
-            x2 = battery_nmr[0]
-            y2 = battery_nmr[1]
-            cables.append(((x1, y1), (x1, y2)))
-            cables.append(((x1, y2), (x2, y2)))
-
-        # adding the entire collection to the grid
-        ln_coll = LineCollection(cables)
-        ax.add_collection(ln_coll)
-
-        # turn on the grid
-        ax.grid()
-
-        # establish gridlines and show plot
-        plt.xticks(np.arange(0, 51, 1))
-        plt.yticks(np.arange(0, 51, 1))
-        plt.show()
+        visualize_grid.visualize_all(list_houses, list_batteries)
 
 if __name__ == "__main__":
     start_time = datetime.now()
