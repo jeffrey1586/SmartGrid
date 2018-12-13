@@ -31,4 +31,16 @@ class Battery(object):
         self.capacity = float(self.capacity) - float(output)
         return self.capacity
 
-        #super(, self).__init__()
+    # method that changes the battery capacities when swap is made
+    def change_capacity(self, batt_one, batt_two, house_one, house_two):
+        batt_one.set_capacity(-1 * float(house_one.get_output()))
+        batt_two.set_capacity(-1 * float(house_two.get_output()))
+        cap_one = batt_one.set_capacity(house_two.get_output())
+        cap_two = batt_two.set_capacity(house_one.get_output())
+        return (cap_one, cap_two)
+
+    # method that changes the batteryId of a house houseobject
+    def change_batteryId(self, house_one, house_two, index_one, index_two):
+        house_one.set_batteryId(int(index_one))
+        house_two.set_batteryId(int(index_two))
+        return
