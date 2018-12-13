@@ -18,7 +18,7 @@ class Visualize(object):
         self.houses = list_houses
         self.batteries = list_batteries
 
-    def visualize_all(self, list_houses, list_batteries):
+    def visualize_all(self, list_houses, list_batteries, optimallength):
 
         # setting up plots
         fig, ax = plt.subplots()
@@ -144,5 +144,5 @@ class Visualize(object):
         # establish gridlines and show plot
         plt.xticks(np.arange(0, 51, 1))
         plt.yticks(np.arange(0, 51, 1))
-        plt.title("Greedy algorithm, kabellengte: 3876")
+        plt.title("Greedy algorithm, kabellengte: %s" % (optimallength))
         plt.show()

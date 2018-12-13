@@ -1,17 +1,23 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.collections import LineCollection
-from code.classes.house import House
-from code.classes.battery import Battery
-from random import shuffle
-import itertools
-from itertools import zip_longest
-import csv
+# add the current structure with path
+import os, sys
+directory = os.path.dirname(os.path.realpath("algorithms"))
+sys.path.append(os.path.join(directory, "code"))
+sys.path.append(os.path.join(directory, "code", "classes"))
+
+from battery import Battery
 from datetime import datetime
-import pickle
-import math
+from house import House
+from itertools import zip_longest
+from matplotlib.collections import LineCollection
+from random import shuffle
 from visualize import Visualize
+import csv
+import itertools
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pickle
 
 
 """
@@ -22,11 +28,14 @@ optimalorder= []
 optimallength = 0
 lengths = []
 total_length = 0
+relocation_length = 0
+diax = 0
+diay = 0
 
 # initialising counter for comparing
 count = 0
 
-class SmartGrid():
+class SmartGridRelocation():
 
     def __init__(self):
         self.batteries = self.load_batteries()
@@ -37,9 +46,11 @@ class SmartGrid():
 
     # load method for Batteries
     def load_batteries(self):
+        global diax
+        global diay
 
         # reading the battery file
-        batteryfile= open("data/wijk2_batterijen.txt", "r")
+        batteryfile= open("data/wijk1_batterijen.txt", "r")
         list_batteries = []
 
         # making battery instances and adding to list
@@ -52,13 +63,19 @@ class SmartGrid():
                 capacity = check[2]
                 list_batteries.append(Battery(x_value, y_value, capacity))
             counter = 1
+        battery_change = list_batteries[0]
+
+        battery_change.set_xval(diay)
+        battery_change.set_yval(diax)
+        dia += 1
+
         return list_batteries
 
     # load method for Houses
     def load_houses(self):
 
         # reading the house file
-        housefile= open("data/wijk2_huizen.csv", "r")
+        housefile= open("data/wijk1_huizen.csv", "r")
         list_houses = []
         counter = 0
         id = 1
@@ -85,7 +102,7 @@ class SmartGrid():
         global total_length
 
         # change order of array list_houses
-        shuffle(self.houses)
+        # shuffle(self.houses)
         for house in self.houses:
 
             # calculate length to closest battery
@@ -136,33 +153,28 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(500000):
+    for i in range(50):
         smartgrid = SmartGrid()
-        lengths.append(total_length)
+        # lengths.append(total_length)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
 
-    # standard deviation and mean
-    print("best: ", min(lengths))
-    print("worst: ", max(lengths))
-    print("sd: ", np.std(lengths))
-    print("mean: ", np.mean(lengths))
-
-    unique_lengths = set(lengths)
-    #print(unique_lengths)
-    count_unique = len(unique_lengths)
+    # unique_lengths = set(lengths)
+    # #print(unique_lengths)
+    # count_unique = len(unique_lengths)
     #print(count_unique)
 
-    bins = np.linspace(math.ceil(min(lengths)),
-                   math.floor(max(lengths)),
-                   count_unique)
-
-    plt.xlim([min(lengths), max(lengths)])
-
-    plt.hist(lengths, bins=bins, alpha=1)
-    plt.title('Shuffle algorithm (iteraties: 500 000)')
-    plt.xlabel('Score')
-    plt.ylabel('Aantal per score')
-
-    plt.show()
+    # bins = np.linspace(math.ceil(min(lengths)),
+    #                math.floor(max(lengths)),
+    #                count_unique)
+    #
+    # plt.xlim([min(lengths), max(lengths)])
+    #
+    #
+    # plt.hist(lengths, bins=bins, alpha=1)
+    # plt.title('Shuffle algorithm (iteraties: 1 000 000)')
+    # plt.xlabel('Score')
+    # plt.ylabel('Aantal per score')
+    #
+    # plt.show()

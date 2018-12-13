@@ -1,11 +1,23 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
+# add the current structure with path
+import os, sys
+directory = os.path.dirname(os.path.realpath("algorithms"))
+sys.path.append(os.path.join(directory, "code"))
+sys.path.append(os.path.join(directory, "code", "classes"))
+
+from batteryTwo import Battery
+from datetime import datetime
+from houseTwo import House
+from itertools import zip_longest
 from matplotlib.collections import LineCollection
-from code.classes.houseTwo import House
-from code.classes.batteryTwo import Battery
 from random import shuffle
 from visualize import Visualize
+import csv
+import itertools
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pickle
 
 
 """
@@ -18,7 +30,7 @@ optimallength = 0
 # initialising counters for comparing
 count = 0
 
-class SmartGrid():
+class SmartGridBattery():
 
     def __init__(self):
         self.batteries = self.load_batteries()
@@ -133,8 +145,3 @@ class SmartGrid():
         visualize_grid = Visualize(list_houses, list_batteries)
 
         visualize_grid.visualize_all(list_houses, list_batteries)
-
-if __name__ == "__main__":
-
-    for i in range(1):
-        smartgrid = SmartGrid()

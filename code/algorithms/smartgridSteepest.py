@@ -1,16 +1,24 @@
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-from matplotlib.collections import LineCollection
-from code.classes.house import House
-from code.classes.battery import Battery
-from random import shuffle
-import itertools
-from itertools import zip_longest
-import csv
+# add the current structure with path
+import os, sys
+directory = os.path.dirname(os.path.realpath("algorithms"))
+sys.path.append(os.path.join(directory, "code"))
+sys.path.append(os.path.join(directory, "code", "classes"))
+
+from battery import Battery
 from datetime import datetime
-import random
+from house import House
+from itertools import zip_longest
+from matplotlib.collections import LineCollection
+from random import shuffle
 from visualize import Visualize
+import csv
+import itertools
+import math
+import matplotlib.pyplot as plt
+import numpy as np
+import pandas as pd
+import pickle
+import random
 
 """
 initialising variables, filling when better smartgrid is found
@@ -26,7 +34,7 @@ besttotal = 0
 # initialising counter for comparing
 count = 0
 
-class SmartGrid():
+class SmartGridSteepest():
 
     def __init__(self):
         self.batteries = self.load_batteries()
@@ -104,7 +112,7 @@ class SmartGrid():
 
         # # saving initial list order and optimal length
         # if count == 0:
-        #     optimal = self.houses
+        #     optimalorder = self.houses
         #     optimallength = total_length
         #     print(optimallength)
         #
@@ -112,12 +120,13 @@ class SmartGrid():
         # elif count > 0 and count < 1000:
         #     if optimallength < total_length:
         #         optimallength = total_length
-        #         optimal = self.houses
+        #         optimalorder = self.houses
         #         print(optimallength)
         # count += 1
 
         if count == 0:
             # Steepest-ascent hill climber implementation
+            # optimal = optimalorder
             optimal = self.houses
             house = optimal[0]
             besttotal = house.total(optimal, self.batteries)
@@ -177,6 +186,7 @@ class SmartGrid():
                     battery_sec.set_capacity(house_first.get_output())
                     print("total: ", house.total(optimal, self.batteries))
 
+        lengths.append(besttotal)
         return besttotal
 
     # method that visualizes the grids
@@ -186,20 +196,28 @@ class SmartGrid():
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
 
-        visualize_grid.visualize_all(list_houses, list_batteries)
+        visualize_grid.visualize_all(list_houses, list_batteries, besttotal)
 
-if __name__ == "__main__":
-    start_time = datetime.now()
+        # standard deviation and mean
+        print("best: ", min(lengths))
+        print("worst: ", max(lengths))
+        print("sd: ", np.std(lengths))
+        print("mean: ", np.mean(lengths))
 
-    for i in range(10):
-        smartgrid = SmartGrid()
-        lengths.append(besttotal)
-        print(besttotal)
+        unique_lengths = set(lengths)
+        #print(unique_lengths)
+        count_unique = len(unique_lengths)
+        #print(count_unique)
 
-    end_time = datetime.now()
-    print('Duration: {}'.format(end_time - start_time))
+        bins = np.linspace(math.ceil(min(lengths)),
+                       math.floor(max(lengths)),
+                       count_unique)
 
-    # standard deviation and mean
-    print("best: ", min(lengths))
-    print("sd: ", np.std(lengths))
-    print("mean: ", np.mean(lengths))
+        plt.xlim([min(lengths), max(lengths)])
+
+        plt.hist(lengths, bins=bins, alpha=1)
+        plt.title('Shuffle algorithm (iteraties: 500 000)')
+        plt.xlabel('Score')
+        plt.ylabel('Aantal per score')
+
+        plt.show()
