@@ -17,7 +17,7 @@ optimalorder for best sequence in list_houses, optimallength for best cabledista
 optimalorder= []
 optimallength = 0
 lengths = []
-total_length = 0
+besttotal = 0
 
 # initialising counter for comparing
 count = 0
@@ -78,11 +78,10 @@ class SmartGrid():
         global count
         global optimalorder
         global optimallength
-        global total_length
+        global besttotal
 
         # change order of array list_houses
         shuffle(self.houses)
-        total_length = 0
         for house in self.houses:
 
             # calculate length to closest battery
@@ -97,39 +96,34 @@ class SmartGrid():
             # add the batterynumber to houseobject
             house.set_batteryId(index_battery[0])
 
-            # add distance to total_length
-            total_length += index_battery[1]
-
         # hill climber implementation
         house = self.houses[0]
         besttotal = house.total(self.houses, self.batteries)
         for i in range(149):
 
-            house_first = self.houses[i]
-            house_sec = self.houses[i + 1]
-            index_first = int(house_first.get_batteryId())
-            index_sec = int(house_sec.get_batteryId())
-            battery_first = self.batteries[index_first]
-            battery_sec = self.batteries[index_sec]
+            house_one = self.houses[i]
+            house_two = self.houses[i + 1]
+            index_one = int(house_one.get_batteryId())
+            index_two = int(house_two.get_batteryId())
+            battery_one = self.batteries[index_one]
+            battery_two = self.batteries[index_two]
 
             # check if houses are connected to same battery
-            if (index_first != index_sec):
-                battery_first.set_capacity(-1 * float(house_first.get_output()))
-                battery_sec.set_capacity(-1 * float(house_sec.get_output()))
-                cap_one = battery_first.set_capacity(house_sec.get_output())
-                cap_two = battery_sec.set_capacity(house_first.get_output())
+            if (index_one != index_two):
+                capacities = battery_one.change_capacity(battery_one,
+                 battery_two, house_one, house_two)
+                cap_one = capacities[0]
+                cap_two = capacities[1]
 
                 # checking if capacities are exceeded
                 if (cap_one < 0 or cap_two < 0):
-                    battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                    battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                    battery_first.set_capacity(house_first.get_output())
-                    battery_sec.set_capacity(house_sec.get_output())
+                    capacities = battery_one.change_capacity(battery_one,
+                    battery_two, house_two, house_one)
 
                 # swap connections
                 else:
-                    house_first.set_batteryId(int(index_sec))
-                    house_sec.set_batteryId(int(index_first))
+                    battery_one.change_batteryId(house_one, house_two,
+                     index_two, index_one)
                     newtotal = house.total(self.houses, self.batteries)
 
                     # check for better result
@@ -138,14 +132,12 @@ class SmartGrid():
                         besttotal = newtotal
                         print("new: ", besttotal)
                     else:
-                        house_first.set_batteryId(int(index_first))
-                        house_sec.set_batteryId(int(index_sec))
-                        battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                        battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                        battery_first.set_capacity(house_first.get_output())
-                        battery_sec.set_capacity(house_sec.get_output())
+                        battery_one.change_batteryId(house_one, house_two,
+                         index_one, index_two)
+                        capacities = battery_one.change_capacity(
+                         battery_one, battery_two, house_two, house_one)
 
-        return total_length
+        return besttotal
 
     # method that visualizes the grids
     def visualize_grid(self):
@@ -237,9 +229,9 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(10000):
+    for i in range(10):
         smartgrid = SmartGrid()
-        lengths.append(total_length)
+        lengths.append(besttotal)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))

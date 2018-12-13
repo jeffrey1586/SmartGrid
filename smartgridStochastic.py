@@ -16,13 +16,6 @@ import math
 initialising variables, filling when better smartgrid is found
 optimalorder for best sequence in list_houses, optimallength for best cabledistance
 """
-optimalorder= []
-optimallength = 0
-lengths = []
-total = 0
-
-# initialising counter for comparing
-count = 0
 
 class SmartGrid():
 
@@ -37,7 +30,7 @@ class SmartGrid():
     def load_batteries(self):
 
         # reading the battery file
-        batteryfile= open("data/wijk1_batterijen.txt", "r")
+        batteryfile= open("data/wijk2_batterijen.txt", "r")
         list_batteries = []
 
         # making battery instances and adding to list
@@ -56,7 +49,7 @@ class SmartGrid():
     def load_houses(self):
 
         # reading the house file
-        housefile= open("data/wijk1_huizen.csv", "r")
+        housefile= open("data/wijk2_huizen.csv", "r")
         list_houses = []
         counter = 0
         id = 1
@@ -84,7 +77,6 @@ class SmartGrid():
 
         # change order of array list_houses
         shuffle(self.houses)
-
         for house in self.houses:
 
             # calculate length to closest battery
@@ -94,56 +86,54 @@ class SmartGrid():
             min_distance = house.calculate_min(all_distances[0])
 
             # adjusting battery capacity and checking for overload
-            index_battery = house.check_capacity(all_distances[0], min_distance, all_distances[1], self.batteries)
+            index_battery = house.check_capacity(all_distances[0], min_distance,
+             all_distances[1], self.batteries)
 
             # add the batterynumber to houseobject
             house.set_batteryId(index_battery[0])
 
-            # # add distance to total_length
-            # total_length += index_battery[1]
-
         # Stochastic hill climber implementation
         house = self.houses[0]
-        for i in range(1000):
+        for i in range(1):
             j = random.randint(0,149)
             k = random.randint(0,149)
-            house_first = self.houses[j]
-            house_sec = self.houses[k]
-            index_first = int(house_first.get_batteryId())
-            index_sec = int(house_sec.get_batteryId())
-            battery_first = self.batteries[index_first]
-            battery_sec = self.batteries[index_sec]
+            house_one = self.houses[j]
+            house_two = self.houses[k]
+            index_one = int(house_one.get_batteryId())
+            index_two = int(house_two.get_batteryId())
+            battery_one = self.batteries[index_one]
+            battery_two = self.batteries[index_two]
 
-            old_total = house.local_length(house_first, house_sec, self.batteries)
+            old_total = house.local_length(house_one, house_two,
+             self.batteries)
 
             # check if houses are connected to same battery
-            if (index_first != index_sec):
-                battery_first.set_capacity(-1 * float(house_first.get_output()))
-                battery_sec.set_capacity(-1 * float(house_sec.get_output()))
-                cap_one = battery_first.set_capacity(house_sec.get_output())
-                cap_two = battery_sec.set_capacity(house_first.get_output())
+            if (index_one != index_two):
+                capacities = battery_one.change_capacity(battery_one,
+                 battery_two, house_one, house_two)
+                cap_one = capacities[0]
+                cap_two = capacities[1]
 
                 # checking if capacities are exceeded
                 if (cap_one < 0 or cap_two < 0):
-                    battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                    battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                    battery_first.set_capacity(house_first.get_output())
-                    battery_sec.set_capacity(house_sec.get_output())
+                    capacities = battery_one.change_capacity(battery_one,
+                    battery_two, house_two, house_one)
 
                 # swap connections
                 else:
-                    house_first.set_batteryId(int(index_sec))
-                    house_sec.set_batteryId(int(index_first))
-                    new_total = house.local_length(house_first, house_sec, self.batteries)
+                    battery_one.change_batteryId(house_one, house_two,
+                     index_two, index_one)
+                    new_total = house.local_length(house_one,
+                     house_two, self.batteries)
 
                     # check for better result
                     if (old_total < new_total):
-                        house_first.set_batteryId(int(index_first))
-                        house_sec.set_batteryId(int(index_sec))
-                        battery_first.set_capacity(-1 * float(house_sec.get_output()))
-                        battery_sec.set_capacity(-1 * float(house_first.get_output()))
-                        battery_first.set_capacity(house_first.get_output())
-                        battery_sec.set_capacity(house_sec.get_output())
+                        battery_one.change_batteryId(house_one, house_two,
+                         index_one, index_two)
+
+                        capacities = battery_one.change_capacity(
+                        battery_one, battery_two, house_two, house_one)
+
 
         total = house.total(self.houses, self.batteries)
         # print(total)
@@ -237,18 +227,16 @@ class SmartGrid():
         plt.show()
 
 if __name__ == "__main__":
-    start_time = datetime.now()
+    optimalorder= []
+    optimallength = 0
+    lengths = []
+    total = 0
+    count = 0
 
-    for i in range(10000):
+    start_time = datetime.now()
+    for i in range(1):
         smartgrid = SmartGrid()
         lengths.append(total)
-        print(total)
-
-        # # writing total_length value to csv
-        # with open('resultaten/testresults.csv', mode='a') as results_file:
-        #     results_writer = csv.writer(results_file)
-        #     export_data = [total]
-        #     results_writer.writerow(export_data)
 
     end_time = datetime.now()
     print('Duration: {}'.format(end_time - start_time))
@@ -269,5 +257,5 @@ if __name__ == "__main__":
     # plt.title("Stochastic Hill climber(itteration: 3000)")
     # plt.xlabel('Score')
     # plt.ylabel('Count')
-
-    plt.show()
+    #
+    # plt.show()
