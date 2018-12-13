@@ -1,4 +1,4 @@
- import pandas as pd
+import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.collections import LineCollection
@@ -30,14 +30,14 @@ class SmartGrid():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        self.visualize = self.visualize_grid()
+        #self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
     def load_batteries(self):
 
         # reading the battery file
-        batteryfile= open("data/wijk1_batterijen.txt", "r")
+        batteryfile= open("data/wijk2_batterijen.txt", "r")
         list_batteries = []
 
         # making battery instances and adding to list
@@ -56,7 +56,7 @@ class SmartGrid():
     def load_houses(self):
 
         # reading the house file
-        housefile= open("data/wijk1_huizen.csv", "r")
+        housefile= open("data/wijk2_huizen.csv", "r")
         list_houses = []
         counter = 0
         id = 1
@@ -83,7 +83,7 @@ class SmartGrid():
         global total_length
 
         # change order of array list_houses
-        #shuffle(self.houses)
+        shuffle(self.houses)
         for house in self.houses:
 
             # calculate length to closest battery
@@ -255,7 +255,7 @@ class SmartGrid():
 if __name__ == "__main__":
     start_time = datetime.now()
 
-    for i in range(10000):
+    for i in range(500000):
         smartgrid = SmartGrid()
         lengths.append(total_length)
 
@@ -264,6 +264,7 @@ if __name__ == "__main__":
 
     # standard deviation and mean
     print("best: ", min(lengths))
+    print("worst: ", max(lengths))
     print("sd: ", np.std(lengths))
     print("mean: ", np.mean(lengths))
 
@@ -278,9 +279,8 @@ if __name__ == "__main__":
 
     plt.xlim([min(lengths), max(lengths)])
 
-
     plt.hist(lengths, bins=bins, alpha=1)
-    plt.title('Shuffle algorithm (iteraties: 1 000 000)')
+    plt.title('Shuffle algorithm (iteraties: 500 000)')
     plt.xlabel('Score')
     plt.ylabel('Aantal per score')
 
