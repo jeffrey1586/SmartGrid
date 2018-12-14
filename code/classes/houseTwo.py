@@ -1,6 +1,6 @@
+"""Defines the house class, which is used by smartgridBattery.py."""
 class House(object):
 
-    """Defines the house class."""
     def __init__(self, id, xvalue, yvalue, output, batteryId):
         self.id = id
         self.xvalue = xvalue
@@ -31,7 +31,6 @@ class House(object):
     def set_batteryId(self, index):
         self.batteryId = index
         return self.batteryId
-
 
     # methods that returns the values when printing house object
     def __str__(self):

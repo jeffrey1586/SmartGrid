@@ -21,8 +21,7 @@ import pickle
 
 
 """
-initialising variables, filling when better smartgrid is found
-optimalorder for best sequence in list_houses, optimallength for best cabledistance
+This class generates smartgrids with a shuffle algorithm.
 """
 count = 0
 optimalorder= []
@@ -30,7 +29,7 @@ lengths = []
 optimallength = 0
 total_length = 0
 
-class SmartGridHouse():
+class SmartGridShuffle():
 
     def __init__(self):
         self.batteries = self.load_batteries()
@@ -89,7 +88,7 @@ class SmartGridHouse():
         global optimallength
         global total_length
 
-        # change order of array list_houses
+        # shuffle order of array list_houses
         shuffle(self.houses)
         for house in self.houses:
 
@@ -122,43 +121,34 @@ class SmartGridHouse():
 
         #writing total_length value to csv
         pickle.dump(total_length, open( "resultaten/pickledata.p", "wb" ))
-
         pickle_total_length = pickle.load( open ( "resultaten/pickledata.p", "rb" ))
-
-        print(pickle_total_length)
         lengths.append(total_length)
+
         return total_length
 
     # method that visualizes the grids
     def visualize_grid(self):
 
+        # get list of houses and batteries, and visualize the grid
         list_houses = optimalorder
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
-
         visualize_grid.visualize_all(list_houses, list_batteries, optimallength)
 
-
-        # standard deviation and mean
+        # print the best and worst score, standard deviation and mean
         print("best: ", min(lengths))
         print("worst: ", max(lengths))
         print("sd: ", np.std(lengths))
         print("mean: ", np.mean(lengths))
 
+        # plot a histogram with the score (x-axis) and count (y-axis)
         unique_lengths = set(lengths)
-        #print(unique_lengths)
         count_unique = len(unique_lengths)
-        #print(count_unique)
-
         bins = np.linspace(math.ceil(min(lengths)),
-                       math.floor(max(lengths)),
-                       count_unique)
-
+                       math.floor(max(lengths)), count_unique)
         plt.xlim([min(lengths), max(lengths)])
-
         plt.hist(lengths, bins=bins, alpha=1)
         plt.title('Shuffle algorithm (iteraties: 500 000)')
         plt.xlabel('Score')
         plt.ylabel('Aantal per score')
-
         plt.show()

@@ -2,7 +2,7 @@
 
 Veel huizen hebben tegenwoordig zonnepanelen om zelf energie mee te produceren. Deze productie is echter vaak groter dan de consumptie, waardoor de stroom die overblijft in batterijen opgeslagen moet worden. In SmartGrid worden drie wijken gevisualiseerd met elk vijf batterijen, waarbij de opslag geregeld dient te worden: in deze code hebben wij oplossingen gevonden voor dit probleem, dat vier fases kent.
 
-![Wijk 1 met kabellengte 3772](https://github.com/jeffrey1586/SmartGrid/blob/master/doc/better%20visualization%20standard%20wijk1.png)  
+![Wijk 1 met kabellengte 3776](https://github.com/jeffrey1586/SmartGrid/blob/master/doc/better%20visualization%20standard%20wijk1.png)  
 
 In fase a) dienen alle huizen aan de batterijen te worden aangesloten, zonder dat er batterijen overladen worden. In fase b) wordt die configuratie geoptimaliseerd. Dat wil zeggen, dat de aansluiting met zo min mogelijk kabel plaats vindt. In fase c) kunnen de batterijen worden verplaatst, met als doel de SmartGrids verder te optimaliseren. In fase d) worden tot slot de batterijen vervangen door andersoortige batterijen, die in capaciteit en prijs verschillen.
 
@@ -65,7 +65,7 @@ Ten slotte is er een derde hillcimber, de steepest ascend. Deze pakt eerst een r
 **vanuit batterij**
 Zoals eerder vermeld is de volgorde waarin huizen verbonden worden relevant. Eveneens is het object van waaruit verbonden wordt relevant: dat kan vanuit een huis zijn, of vanuit een batterij (smartgridBattery.py).
 
-In de code zoals deze nu is, is het echter onmogelijk om het laatste huis nog te verbinden. Geen enkele batterij heeft nog genoeg capacteit over om de laatste output op te vangen. Het resultaat zonder deze laatste verbinding is een kabellengte van  3817: verbetering van de code zal moeten laten blijken of deze verbindingswijze beter is.
+In de code zoals deze nu is, is het echter vaak onmogelijk om het laatste huis nog te verbinden. Vaak heeft geen enkele batterij nog genoeg capacteit over om de laatste output op te vangen. Het resultaat zonder deze laatste verbinding is een kabellengte van  3817: verbetering van de code zal moeten laten blijken of deze verbindingswijze beter is.
 
 ## Aan de slag (Getting Started)
 
@@ -85,16 +85,17 @@ Alle Python scripts staan in de folder Code. In de map Data zitten alle input wa
 
 ### Test (Testing)
 
-Om de code te draaien met de standaardconfiguratie (bv. brute-force en data/wijk1_batterijen.csv, data/wijk1_huizen.csv) gebruik de instructie:
+Om de code te draaien met de standaardconfiguratie (bv. met shuffle-algoritme en de data van wijk 1: data/wijk1_batterijen.csv, data/wijk1_huizen.csv) gebruik de instructie:
 
 ```
-python smartgrid.py
+python main.py
 ```
+In main kan het aantal smartgrids dat dient te worden gemaakt aangegeven worden op regel 25. Binnen de for-loop kan gespecificeerd worden na hoeveel iteraties te tijd moet worden opgenomen.
 
 ## Auteurs (Authors)
 
-* Jeffrey Chong
-* Wim van Dijk
+* Jeffrey Chong, 11304669
+* Wim van Dijk, 10421661
 
 ## Dankwoord (Acknowledgments)
 

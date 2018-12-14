@@ -1,6 +1,7 @@
+"""This class represents a house object and is used by multiple algorithms."""
+
 class House(object):
 
-    """Defines the house class."""
     def __init__(self, id, xvalue, yvalue, output, batteryId):
         self.id = id
         self.xvalue = xvalue

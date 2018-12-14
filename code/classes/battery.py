@@ -1,6 +1,6 @@
+"""This class represents a battery object and is used by multiple algorithms."""
 class Battery(object):
 
-    """Defines the battery class."""
     def __init__(self, xvalue, yvalue, capacity):
         self.xvalue = xvalue
         self.yvalue = yvalue

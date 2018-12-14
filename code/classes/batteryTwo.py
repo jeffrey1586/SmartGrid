@@ -1,6 +1,7 @@
+
+"""Defines the battery class, which is used by smartgridBatter.py."""
 class Battery(object):
 
-    """Defines the battery class."""
     def __init__(self, xvalue, yvalue, capacity):
         self.xvalue = xvalue
         self.yvalue = yvalue
@@ -71,5 +72,3 @@ class Battery(object):
     def set_capacity(self, output):
         self.capacity = float(self.capacity) - float(output)
         return self.capacity
-
-        #super(, self).__init__()
