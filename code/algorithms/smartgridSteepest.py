@@ -21,8 +21,7 @@ import pickle
 import random
 
 """
-initialising variables, filling when better smartgrid is found
-optimalorder for best sequence in list_houses, optimallength for best cabledistance
+This class generates smartgrids with a steepest ascent hill climber.
 """
 optimalorder= []
 optimallength = 0
@@ -110,6 +109,7 @@ class SmartGridSteepest():
             # add the batterynumber to houseobject
             house.set_batteryId(index_battery[0])
 
+        # # This can be used if shuffle needs to be itterated more than once
         # # saving initial list order and optimal length
         # if count == 0:
         #     optimalorder = self.houses
@@ -153,7 +153,7 @@ class SmartGridSteepest():
                             capacities = battery_one.change_capacity(
                             battery_one, battery_two, house_two, house_one)
 
-                        # swap connections
+                        # swap the connections
                         else:
                             battery_one.change_batteryId(house_one, house_two,
                             index_two, index_one)
@@ -163,10 +163,9 @@ class SmartGridSteepest():
                             if (besttotal > newtotal):
                                 key_id = house_sec.get_id()
                                 swap_distances[key_id] = newtotal
-                                print("old: ", besttotal)
                                 besttotal = newtotal
-                                print("new: ", newtotal)
 
+                            # set all changes back to initial state
                             battery_one.change_batteryId(house_one, house_two,
                              index_one, index_two)
                             capacities = battery_one.change_capacity(
@@ -176,10 +175,10 @@ class SmartGridSteepest():
                 if swap_distances != {}:
                     house_id = max(swap_distances, key=swap_distances.get)
                     house_sec = list_houses[house_id]
-
                     index_sec = int(house_sec.get_batteryId())
                     battery_sec = self.batteries[index_sec]
 
+                    # make the swap between the two connections
                     battery_one.change_batteryId(house_one, house_two,
                     index_two, index_one)
                     battery_first.set_capacity(house_sec.get_output())
@@ -192,32 +191,26 @@ class SmartGridSteepest():
     # method that visualizes the grids
     def visualize_grid(self):
 
+        # get list of houses and batteries, and visualize the grid
         list_houses = self.houses
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
-
         visualize_grid.visualize_all(list_houses, list_batteries, besttotal)
 
-        # standard deviation and mean
+        # print the best and worst score, standard deviation and mean
         print("best: ", min(lengths))
         print("worst: ", max(lengths))
         print("sd: ", np.std(lengths))
         print("mean: ", np.mean(lengths))
 
+        # plot a histogram with the score (x-axis) and count (y-axis)
         unique_lengths = set(lengths)
-        #print(unique_lengths)
         count_unique = len(unique_lengths)
-        #print(count_unique)
-
         bins = np.linspace(math.ceil(min(lengths)),
-                       math.floor(max(lengths)),
-                       count_unique)
-
+                       math.floor(max(lengths)), count_unique)
         plt.xlim([min(lengths), max(lengths)])
-
         plt.hist(lengths, bins=bins, alpha=1)
-        plt.title('Shuffle algorithm (iteraties: 500 000)')
+        plt.title('Steepest ascent algorithm (iteraties: 500 000)')
         plt.xlabel('Score')
         plt.ylabel('Aantal per score')
-
         plt.show()

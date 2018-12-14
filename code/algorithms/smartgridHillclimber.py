@@ -21,8 +21,7 @@ import pickle
 
 
 """
-initialising variables, filling when better smartgrid is found
-optimalorder for best sequence in list_houses, optimallength for best cabledistance
+This class generates smartgrids with a simple Hill climber algorithm.
 """
 optimalorder= []
 optimallength = 0
@@ -38,7 +37,8 @@ class SmartGridHillclimber():
         self.batteries = self.load_batteries()
         self.houses = self.load_houses()
         self.connecting = self.connecting()
-        #self.visualize = self.visualize_grid()
+        if count == 10:
+            self.visualize = self.visualize_grid()
 
 
     # load method for Batteries
@@ -107,10 +107,12 @@ class SmartGridHillclimber():
             house.set_batteryId(index_battery[0])
 
         # hill climber implementation
+        count += 1
         house = self.houses[0]
         besttotal = house.total(self.houses, self.batteries)
         for i in range(149):
 
+            # get house objects and their connected battery
             house_one = self.houses[i]
             house_two = self.houses[i + 1]
             index_one = int(house_one.get_batteryId())
@@ -130,52 +132,49 @@ class SmartGridHillclimber():
                     capacities = battery_one.change_capacity(battery_one,
                     battery_two, house_two, house_one)
 
-                # swap connections
+                # swap the connections
                 else:
                     battery_one.change_batteryId(house_one, house_two,
                      index_two, index_one)
                     newtotal = house.total(self.houses, self.batteries)
 
-                    # check for better result
+                    # save the better result
                     if (besttotal > newtotal):
-                        print("old: ", besttotal)
                         besttotal = newtotal
-                        print("new: ", besttotal)
+
+                    # set the connection back
                     else:
                         battery_one.change_batteryId(house_one, house_two,
                          index_one, index_two)
                         capacities = battery_one.change_capacity(
                          battery_one, battery_two, house_two, house_one)
+
         lengths.append(besttotal)
         return besttotal
 
     # method that visualizes the grids
     def visualize_grid(self):
 
+        # get list of houses and batteries, and visualize the grid
         list_houses = self.houses
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
-
         visualize_grid.visualize_all(list_houses, list_batteries, besttotal)
 
-        # standard deviation and mean
+        # print the best and worst score, standard deviation and mean
         print("best: ", min(lengths))
         print("worst: ", max(lengths))
         print("sd: ", np.std(lengths))
         print("mean: ", np.mean(lengths))
 
+        # plot a histogram with the score (x-axis) and count (y-axis)
         unique_lengths = set(lengths)
         count_unique = len(unique_lengths)
-
         bins = np.linspace(math.ceil(min(lengths)),
-                       math.floor(max(lengths)),
-                       count_unique)
-
+                       math.floor(max(lengths)), count_unique)
         plt.xlim([min(lengths), max(lengths)])
-
         plt.hist(lengths, bins=bins, alpha=1)
-        plt.title('Shuffle algorithm (iteraties: 500 000)')
+        plt.title('Simple Hill climber (iteraties: 2 500 000)')
         plt.xlabel('Score')
         plt.ylabel('Aantal per score')
-
         plt.show()
