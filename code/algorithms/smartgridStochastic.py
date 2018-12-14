@@ -21,8 +21,7 @@ import pickle
 import random
 
 """
-initialising variables, filling when better smartgrid is found
-optimalorder for best sequence in list_houses, optimallength for best cabledistance
+This class generates smartgrids with the use of a stochastic Hill climber
 """
 
 lengths = []
@@ -142,6 +141,7 @@ class SmartGridStochastic():
                         capacities = battery_one.change_capacity(
                         battery_one, battery_two, house_two, house_one)
 
+        # append the lowest total length to the lengths list
         total = house.total(self.houses, self.batteries)
         lengths.append(total)
         return total
@@ -149,30 +149,26 @@ class SmartGridStochastic():
     # method that visualizes the grids
     def visualize_grid(self):
 
+        # get list of houses and batteries, and visualize the grid
         list_houses = self.houses
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
-
         visualize_grid.visualize_all(list_houses, list_batteries, total)
 
-        # standard deviation and mean
+        # print the best and worst score, standard deviation and mean
         print("best: ", min(lengths))
         print("worst: ", max(lengths))
         print("sd: ", np.std(lengths))
         print("mean: ", np.mean(lengths))
 
+        # plot a histogram with the score (x-axis) and count (y-axis)
         unique_lengths = set(lengths)
         count_unique = len(unique_lengths)
-
         bins = np.linspace(math.ceil(min(lengths)),
-                       math.floor(max(lengths)),
-                       count_unique)
-
+                       math.floor(max(lengths)), count_unique)
         plt.xlim([min(lengths), max(lengths)])
-
         plt.hist(lengths, bins=bins, alpha=1)
-        plt.title('Shuffle algorithm (iteraties: 500 000)')
+        plt.title('Stochastic algorithm (iteraties: 500 000)')
         plt.xlabel('Score')
         plt.ylabel('Aantal per score')
-
         plt.show()

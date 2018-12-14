@@ -12,12 +12,19 @@ from datetime import datetime
 import pickle
 import math
 
+"""
+This class visualizes the whole smartgrid. The batteries are represented
+as squares and the hosues as stars. The houses are connected to the battery
+with the same color.
+"""
+
 class Visualize(object):
 
     def __init__(self, list_houses, list_batteries):
         self.houses = list_houses
         self.batteries = list_batteries
 
+    # the main visualize function
     def visualize_all(self, list_houses, list_batteries, optimallength):
 
         # setting up plots
@@ -30,6 +37,7 @@ class Visualize(object):
         dHouses = []
         eHouses = []
 
+        # plot the stars that represent the houses
         for k in range(150):
             house_nmr = self.houses[k]
             x_house = int(house_nmr.get_xval())
@@ -74,7 +82,7 @@ class Visualize(object):
             y_battery = int(battery_nmr.get_yval())
             Batteries.append((x_battery, y_battery))
 
-        # coloring batteries
+        # plot the colored squares that represent the batteries
         battcount = 0
         aBatteries = []
         bBatteries = []
@@ -123,7 +131,7 @@ class Visualize(object):
 
         # appending cables lines to lineCollection
         cables = []
-        for i in range(149):
+        for i in range(150):
             house = self.houses[i]
             index = house.get_batteryId()
             battery_nmr = Batteries[index]

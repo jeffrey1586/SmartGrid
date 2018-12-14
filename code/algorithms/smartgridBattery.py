@@ -21,8 +21,8 @@ import pickle
 
 
 """
-initialising variables, filling when better smartgrid is found
-optimal for best sequence in list_houses, optimallength for best cabledistance
+This class creats smartgrids, creating connections with the batteries as
+starting point.
 """
 optimal = []
 optimallength = 0
@@ -123,25 +123,14 @@ class SmartGridBattery():
 
                 battery_nmr += 1
 
-            all_id = []
-            for house in self.houses:
-                all_id.append(house.get_batteryId())
-            print(all_id)
-
-            all_capacities = []
-            for cap_battery in self.batteries:
-                all_capacities.append(float(cap_battery.get_capacity()))
-            print(all_capacities)
-            print(total_length)
-
         return total_length
 
 
     # method that visualizes the grids
     def visualize_grid(self):
 
+        # get list of houses and batteries, and visualize the grid
         list_houses = self.houses
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
-
         visualize_grid.visualize_all(list_houses, list_batteries)

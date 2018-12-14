@@ -21,8 +21,7 @@ import pickle
 
 
 """
-initialising variables, filling when better smartgrid is found
-optimalorder for best sequence in list_houses, optimallength for best cabledistance
+This class relocates the batteries to find a shorter total length.
 """
 optimalorder= []
 optimallength = 0
@@ -134,47 +133,15 @@ class SmartGridRelocation():
 
         #writing total_length value to csv
         pickle.dump(total_length, open( "realtest.p", "wb" ))
-
         pickle_total_length = pickle.load( open ( "realtest.p", "rb" ))
-
-        print(pickle_total_length)
 
         return total_length
 
     # method that visualizes the grids
     def visualize_grid(self):
 
+        # get list of houses and batteries, and visualize the grid
         list_houses = self.houses
         list_batteries = self.batteries
         visualize_grid = Visualize(list_houses, list_batteries)
-
         visualize_grid.visualize_all(list_houses, list_batteries)
-
-if __name__ == "__main__":
-    start_time = datetime.now()
-
-    for i in range(50):
-        smartgrid = SmartGrid()
-        # lengths.append(total_length)
-
-    end_time = datetime.now()
-    print('Duration: {}'.format(end_time - start_time))
-
-    # unique_lengths = set(lengths)
-    # #print(unique_lengths)
-    # count_unique = len(unique_lengths)
-    #print(count_unique)
-
-    # bins = np.linspace(math.ceil(min(lengths)),
-    #                math.floor(max(lengths)),
-    #                count_unique)
-    #
-    # plt.xlim([min(lengths), max(lengths)])
-    #
-    #
-    # plt.hist(lengths, bins=bins, alpha=1)
-    # plt.title('Shuffle algorithm (iteraties: 1 000 000)')
-    # plt.xlabel('Score')
-    # plt.ylabel('Aantal per score')
-    #
-    # plt.show()
