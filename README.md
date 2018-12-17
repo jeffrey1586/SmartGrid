@@ -26,9 +26,9 @@ De upperbound van deze scorefunctie, ofwel de hoogst mogelijke kosten die een co
 
     (n * x) * 9 + 25 000
 
-De lowerbound, ofwel de laagst mogelijke kosten die een configuratie zou kunnen halen (en dus de beste score), is in onderstaande formule weergegeven. De kortste afstand die een huis af zou kunnen leggen is 1; n is het aantal huizen in de wijk.
+De lowerbound geeft de laagst mogelijke kosten die een configuratie zou kunnen halen (en dus de beste score). Deze waarde kan berekend worden door per wijk de huizen aan de dichtstbijzijnde batterij te verbinden met de kortste route, waarbij er niet naar de batterijcapaciteit gekeken wordt (deze mag dus overschreden worden). De berekening van deze situatie is weergegeven in de onderstaande formule. Hierin is 'n' de totale (korte) kabellengte van de wijk. Deze lengte is voor wijk 1: 3132, wijk 2: 2252 en wijk 3:
 
-    (n * 1) * 9 + 25 000
+    n * 9 + 25 000
 
 ## Algoritmes
 Alle resultaten van de algoritmes zijn terug te vinden in de README.md van het mapje resultaten.
